@@ -19,5 +19,9 @@ namespace Hackathon.Data.Context
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(HackathonDbContext).Assembly);            
         }
+        public async Task MigrateAsync(CancellationToken cancellationToken = default)
+        {
+            await Database.MigrateAsync(cancellationToken);
+        }
     }
 }

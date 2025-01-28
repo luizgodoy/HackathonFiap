@@ -5,9 +5,9 @@ namespace Hackathon.Domain.Interfaces
     public interface IAppointmentServices
     {
         Task Create(Appointment appointment);
-        Task<Appointment> GetById(long id);
-        Task<IEnumerable<Appointment>> GetAll();
+        Task<Appointment> GetById(Guid id);
+        Task<IEnumerable<Appointment>> GetAll(Guid? doctorId);
         Task Update(Appointment appointment);
-        Task Delete(long id);
+        Task Delete(Guid id);
     }
 }
