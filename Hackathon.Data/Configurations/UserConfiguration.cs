@@ -10,7 +10,6 @@ namespace Hackathon.Data.Configurations
         {
             builder.ToTable("User", "Hackathon");
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.Id).HasColumnType("NUMERIC").IsRequired();
             builder.Property(e => e.Name).HasColumnType("VARCHAR(100)").IsRequired();
             builder.Property(e => e.Email).HasColumnType("VARCHAR(100)");
             builder.Property(e => e.CPF).HasColumnType("VARHCAR(11)");

@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackathon.Core", "Hackathon.Core\Hackathon.Core.csproj", "{D7653762-6DD9-427C-BA43-7EA439428FA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackathon.Core", "Hackathon.Core\Hackathon.Core.csproj", "{D7653762-6DD9-427C-BA43-7EA439428FA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackathon.Domain", "Hackathon.Domain\Hackathon.Domain.csproj", "{48B0EB8F-856A-4683-9C1D-95043624B542}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackathon.Domain", "Hackathon.Domain\Hackathon.Domain.csproj", "{48B0EB8F-856A-4683-9C1D-95043624B542}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackathon.Data", "Hackathon.Data\Hackathon.Data.csproj", "{B69AB34F-F3FD-414D-A206-AF54E19541AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackathon.Data", "Hackathon.Data\Hackathon.Data.csproj", "{B69AB34F-F3FD-414D-A206-AF54E19541AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackathon.API", "Hackathon.API\Hackathon.API.csproj", "{2D5F9BA0-1FEB-4E67-A73C-4040D44C8FC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackathon.API", "Hackathon.API\Hackathon.API.csproj", "{2D5F9BA0-1FEB-4E67-A73C-4040D44C8FC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackathon.Application", "Hackathon.Application\Hackathon.Application.csproj", "{F9CA646E-0670-4B01-A632-888A11F1AE52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackathon.Application", "Hackathon.Application\Hackathon.Application.csproj", "{F9CA646E-0670-4B01-A632-888A11F1AE52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackathon.Domain.UnitTest", "Hackathon.Domain.UnitTest\Hackathon.Domain.UnitTest.csproj", "{7A3BE317-9886-4127-859A-7ED1965ACD77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackathon.Domain.UnitTest", "Hackathon.Domain.UnitTest\Hackathon.Domain.UnitTest.csproj", "{7A3BE317-9886-4127-859A-7ED1965ACD77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackathon.Contract", "Hackathon.Contract\Hackathon.Contract.csproj", "{0A054B2E-CD49-4144-8C51-27989CFA22F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{7A3BE317-9886-4127-859A-7ED1965ACD77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A3BE317-9886-4127-859A-7ED1965ACD77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A3BE317-9886-4127-859A-7ED1965ACD77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A054B2E-CD49-4144-8C51-27989CFA22F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A054B2E-CD49-4144-8C51-27989CFA22F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A054B2E-CD49-4144-8C51-27989CFA22F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A054B2E-CD49-4144-8C51-27989CFA22F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
