@@ -1,5 +1,6 @@
 
 using Hackathon.API.AutoMapper;
+using Hackathon.API.Configurations;
 using Hackathon.Contract.Contracts;
 using Hackathon.Data.Context;
 using MassTransit;
@@ -21,7 +22,7 @@ namespace Hackathon.API
             builder.Services.AddAutoMapper(typeof(MapperProfile), typeof(MapperProfile));
 
             // Add services to the container.
-
+            builder.Services.ResolveDependencies();
             builder.Services.AddControllers();
 
             // Configuração do MassTransit com RabbitMQ

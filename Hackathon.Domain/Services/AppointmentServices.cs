@@ -30,6 +30,12 @@ namespace Hackathon.Domain.Services
             await _appointmentRepository.Delete(id);
         }
 
+        public async Task<IEnumerable<Appointment>> GetAll()
+        {
+            var appointments = await _appointmentRepository.GetAll();
+            return appointments;
+        }
+
         public async Task<IEnumerable<Appointment>> GetAll(Guid? doctorId)
         {
             var appointments = await _appointmentRepository.GetAll();
