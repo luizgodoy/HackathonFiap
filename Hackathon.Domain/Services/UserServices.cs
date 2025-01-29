@@ -30,9 +30,9 @@ namespace Hackathon.Domain.Services
             await _userRepository.Delete(id);
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<User>> GetAll(Role? role = null)
         {
-            return await _userRepository.GetAll();
+           return await _userRepository.GetAll(role);
         }
 
         public async Task<User> GetById(Guid id)

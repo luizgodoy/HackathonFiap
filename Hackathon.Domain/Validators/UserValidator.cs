@@ -24,13 +24,12 @@ namespace Hackathon.Domain.Validators
                 .MinimumLength(6).WithMessage("A senha deve ter no mínimo 6 caracteres");
 
             RuleFor(u => u.Role)
-                .NotEmpty().WithMessage("A função do usuário deve ser informada")
-                .Must(role => role == "Medico" || role == "Paciente").WithMessage("O usuário deve ser 'Medico' ou 'Paciente'");
+                .NotNull().WithMessage("A função do usuário deve ser informada")
+                .IsInEnum().WithMessage("O usuário deve ser 'Doctor' ou 'Patient'");
 
             RuleFor(u => u.CRM)
-                .NotEmpty()
-                .When(u => u.Role == "Medico")
-                .WithMessage("O CRM é obrigatório para médicos");
+                .NotEmpty().WithMessage("O CRM é obrigatório para médicos")
+                .When(u => u.Role == Role.Doctor);
         }
     }
 }

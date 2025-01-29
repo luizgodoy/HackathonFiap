@@ -11,6 +11,8 @@ namespace Hackathon.API.AutoMapper
         {
             CreateMap<Appointment, AppointmentDto>().ReverseMap();
             CreateMap<EditAppointmentMessage, AppointmentDto>().ReverseMap();
+
+            CreateMap<User, UserDto>().ReverseMap();
         }
     }
 }
