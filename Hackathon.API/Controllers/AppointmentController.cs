@@ -39,7 +39,7 @@ namespace Hackathon.API.Controllers
         {
             try
             {
-                return Ok(await _appointmentService.GetById(id));
+                return Ok(_mapper.Map<AppointmentDto>(await _appointmentService.GetById(id)));
             }
             catch (Exception)
             {
@@ -49,12 +49,27 @@ namespace Hackathon.API.Controllers
 
         [HttpGet]
         //[Authorize(Roles = "Doctor, Patient")]
-        [Route("list-appointment/{docatorId:guid}")]
-        public async Task<IActionResult> GetByDoctorId([FromRoute]Guid? doctorId)
+        [Route("list-appointment")]
+        public async Task<IActionResult> GetAllAppointments()
+        {
+            try
+            {                
+                return Ok(_mapper.Map<IEnumerable<AppointmentDto>>(await _appointmentService.GetAll()));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        //[Authorize(Roles = "Doctor, Patient")]
+        [Route("list-appointment/{doctorId:guid}")]
+        public async Task<IActionResult> GetByDoctorId([FromRoute] Guid doctorId)
         {
             try
             {
-                return Ok(await _appointmentService.GetAll(doctorId));
+                return Ok(_mapper.Map<IEnumerable<AppointmentDto>>(await _appointmentService.GetAll(doctorId)));
             }
             catch (Exception)
             {
@@ -69,22 +84,16 @@ namespace Hackathon.API.Controllers
         {
             try
             {
-                var contact = await _appointmentService.GetById(appointment.Id);
-
-                if (contact is null)
-                {
-                    return NotFound();
-                }
-
-                var updateContactMessage = _mapper.Map<EditAppointmentMessage>(appointment);
-                await _eventBus.Publish(updateContactMessage, context => context.SetRoutingKey("update.appointment"));
-
+                var model = await _appointmentService.GetById(appointment.Id);
+                if (model is null) return NotFound();
+                
+                var updateAppointmentMessage = _mapper.Map<EditAppointmentMessage>(appointment);
+                await _eventBus.Publish(updateAppointmentMessage, context => context.SetRoutingKey("update.appointment"));
             }
             catch (Exception e)
             {
                 return (BadRequest(new { Message = e.Message }));
             }
-
             return Ok(appointment);
         }
 
