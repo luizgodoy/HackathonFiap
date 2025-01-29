@@ -23,7 +23,7 @@ namespace Hackathon.Data.Configurations
                 .IsRequired();
 
             builder.Property(e => e.CPF)
-                .HasColumnType("CHAR(11)") 
+                .HasColumnType("VARCHAR(11)") 
                 .IsRequired();
 
             builder.Property(e => e.CRM)
@@ -35,11 +35,6 @@ namespace Hackathon.Data.Configurations
                 .IsRequired();
 
             builder.Property(e => e.Role)
-                .HasConversion(
-                    role => role.ToString(),        
-                    role => (Role)Enum.Parse(typeof(Role), role) 
-                )
-                .HasColumnType("VARCHAR(10)")
                 .IsRequired();
         }   
     }

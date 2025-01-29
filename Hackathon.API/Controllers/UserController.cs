@@ -23,7 +23,7 @@ namespace Hackathon.API.Controllers
        
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto userDto)
+        public async Task<IActionResult> CreateUser([FromBody] NewUserDto userDto)
         {
             try
             {
