@@ -1,33 +1,54 @@
 ﻿using Hackathon.Core.Models;
+using Hackathon.Data.Interfaces;
 using Hackathon.Domain.Interfaces;
+using Hackathon.Domain.Validators;
 
 namespace Hackathon.Domain.Services
 {
     public class UserServices : IUserServices
     {
-        public Task Create(User user)
+        private readonly IUserRepository _userRepository;
+
+        public UserServices(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
         }
 
-        public Task Delete(long id)
+        public async Task Create(User user)
         {
-            throw new NotImplementedException();
+            var userValidator = new UserValidator();
+            var result = userValidator.Validate(user);
+
+            if (!result.IsValid)
+                throw new Exception(result.Errors.FirstOrDefault()?.ErrorMessage);
+
+            await _userRepository.Create(user);
         }
 
-        public Task<IEnumerable<User>> GetAll()
+        public async Task Delete(Guid id)
         {
-            throw new NotImplementedException();
+            await _userRepository.Delete(id);
         }
 
-        public Task<User> GetById(long id)
+        public async Task<IEnumerable<User>> GetAll(Role? role = null)
         {
-            throw new NotImplementedException();
+           return await _userRepository.GetAll(role);
         }
 
-        public Task Update(User user)
+        public async Task<User> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetById(id);
+        }
+
+        public async Task Update(User user)
+        {
+            var userValidator = new UserValidator();
+            var result = userValidator.Validate(user);
+
+            if (!result.IsValid)
+                throw new Exception(result.Errors.FirstOrDefault()?.ErrorMessage);
+
+            await _userRepository.Update(user);
         }
     }
 }

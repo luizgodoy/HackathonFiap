@@ -7,7 +7,7 @@ namespace Hackathon.Data.Context
     public class HackathonDbContext : DbContext
     {
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Appointment> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public HackathonDbContext() { }
         public HackathonDbContext(DbContextOptions options) : base(options)

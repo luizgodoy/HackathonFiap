@@ -25,17 +25,18 @@ namespace Hackathon.API
             builder.Services.AddControllers();
 
             // Configuração do MassTransit com RabbitMQ
+            /*
             var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
             builder.Services.AddMassTransit(x =>
             {
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     // Host do RabbitMQ definido no appsettings.json
-                    cfg.Host(rabbitMqSettings["Host"], "/", h =>
-                    {
-                        h.Username(rabbitMqSettings["Username"]);
-                        h.Password(rabbitMqSettings["Password"]);
-                    });
+                    //cfg.Host(rabbitMqSettings["Host"], "/", h =>
+                   // {
+                        //h.Username(rabbitMqSettings["Username"]);
+                       // h.Password(rabbitMqSettings["Password"]);
+                  //  });
                    
                     cfg.Message<EditAppointmentMessage>(p =>
                     {
@@ -47,7 +48,7 @@ namespace Hackathon.API
                         p.ExchangeType = "direct";
                     });                    
                 });
-            });
+            });*/
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
