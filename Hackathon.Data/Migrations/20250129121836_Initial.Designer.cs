@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hackathon.Data.Migrations
 {
     [DbContext(typeof(HackathonDbContext))]
-    [Migration("20250128230835_UpdateUser")]
-    partial class UpdateUser
+    [Migration("20250129121836_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ namespace Hackathon.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasColumnType("CHAR(11)");
+                        .HasColumnType("VARCHAR(11)");
 
                     b.Property<string>("CRM")
                         .HasColumnType("VARCHAR(10)");
@@ -81,9 +81,8 @@ namespace Hackathon.Data.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(255)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(10)");
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

@@ -61,7 +61,7 @@ namespace Hackathon.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasColumnType("CHAR(11)");
+                        .HasColumnType("VARCHAR(11)");
 
                     b.Property<string>("CRM")
                         .HasColumnType("VARCHAR(10)");
@@ -78,9 +78,8 @@ namespace Hackathon.Data.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(255)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(10)");
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

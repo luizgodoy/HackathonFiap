@@ -26,5 +26,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Hackathon.Core\Hackathon.Core.csproj" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 
 </Project>

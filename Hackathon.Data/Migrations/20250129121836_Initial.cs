@@ -39,11 +39,11 @@ namespace Hackathon.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "VARCHAR(100)", nullable: false),
-                    CPF = table.Column<string>(type: "VARHCAR(11)", nullable: false),
-                    CRM = table.Column<string>(type: "VARCHAR(10)", nullable: false),
+                    CPF = table.Column<string>(type: "VARCHAR(11)", nullable: false),
+                    CRM = table.Column<string>(type: "VARCHAR(10)", nullable: true),
                     Email = table.Column<string>(type: "VARCHAR(100)", nullable: false),
-                    Password = table.Column<string>(type: "VARCHAR(10)", nullable: false),
-                    Role = table.Column<string>(type: "VARCHAR(10)", nullable: false)
+                    Password = table.Column<string>(type: "VARCHAR(255)", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

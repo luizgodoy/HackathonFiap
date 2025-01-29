@@ -3,6 +3,10 @@ using Hackathon.API.AutoMapper;
 using Hackathon.API.Configurations;
 using Hackathon.Contract.Contracts;
 using Hackathon.Data.Context;
+using Hackathon.Data.Interfaces;
+using Hackathon.Data.Repository;
+using Hackathon.Domain.Interfaces;
+using Hackathon.Domain.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +28,11 @@ namespace Hackathon.API
             // Add services to the container.
             builder.Services.ResolveDependencies();
             builder.Services.AddControllers();
+
+            builder.Services.AddScoped<IAppointmentServices, AppointmentServices>();
+
+            builder.Services.AddScoped<IUserServices, UserServices>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             // Configuração do MassTransit com RabbitMQ
             /*
