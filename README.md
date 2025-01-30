@@ -65,20 +65,19 @@ Antes de começar, certifique-se de ter instalado:
    - **API:** Contém os controladores da API que lidam com as requisições HTTP.   
    - **Core:** Contém as classes de modelo que representam as entidades do sistema.   
    - **Data:** Contém o contexto do Entity Framework e as configurações de banco de dados.   
-   - **Services:** Contém a lógica de negócio da aplicação.   
+   - **Domain:** Contém a lógica de negócio da aplicação.   
    - **Data\Migrations:** Contém as migrações do Entity Framework para gerenciar o esquema do banco de dados.   
    - **Application:** Console que é o consumidor da fila RabbitMQ.
+   - **Contract:** Biblioteca com os modelos da interfaces da mensageria
+   - **Domain.UnitTest:** Implementações de testes unitários
 
 ## Grupo 70:   
 
 - Anderson José Da Silva
 and.jsilva@gmail.com
-
 - Clademir Zampieri
-mr.zampieri@live.com  
- 
+mr.zampieri@live.com 
 - Luiz Antonio Garcia de Godoy
 luiz.godoy@tivit.com
-
 - Ricardo do Vale Czajkowski
 ricardovcza@gmail.com
