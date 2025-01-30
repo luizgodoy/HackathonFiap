@@ -21,15 +21,19 @@ namespace Hackathon.Domain.Validators
 
             RuleFor(u => u.Password)
                 .NotEmpty().WithMessage("A senha é obrigatória")
-                .MinimumLength(6).WithMessage("A senha deve ter no mínimo 6 caracteres");
+                .Matches(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&+=!]{6,}$")
+                .WithMessage("A senha deve conter pelo menos uma letra, um número e um caractere especial, com no mínimo 6 caracteres");
 
             RuleFor(u => u.Role)
-                .NotNull().WithMessage("A função do usuário deve ser informada")
-                .IsInEnum().WithMessage("O usuário deve ser 'Doctor' ou 'Patient'");
+                .IsInEnum().WithMessage("O valor da função do usuário é inválido");
 
             RuleFor(u => u.CRM)
                 .NotEmpty().WithMessage("O CRM é obrigatório para médicos")
                 .When(u => u.Role == Role.Doctor);
+
+            RuleFor(u => u.CRM)
+                .Empty().WithMessage("Pacientes não devem possuir CRM")
+                .When(u => u.Role == Role.Patient);
         }
     }
 }
