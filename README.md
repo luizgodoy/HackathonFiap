@@ -62,12 +62,12 @@ Antes de começar, certifique-se de ter instalado:
    
 ## Estrutura do Projeto
 
-   **API:** Contém os controladores da API que lidam com as requisições HTTP.
-   **Core:** Contém as classes de modelo que representam as entidades do sistema.
-   **Data:** Contém o contexto do Entity Framework e as configurações de banco de dados.
-   **Services:** Contém a lógica de negócio da aplicação.
-   **Data\Migrations:** Contém as migrações do Entity Framework para gerenciar o esquema do banco de dados.
-   **Application:** Console que é o consumidor da fila RabbitMQ.
+   - **API:** Contém os controladores da API que lidam com as requisições HTTP.   
+   - **Core:** Contém as classes de modelo que representam as entidades do sistema.   
+   - **Data:** Contém o contexto do Entity Framework e as configurações de banco de dados.   
+   - **Services:** Contém a lógica de negócio da aplicação.   
+   - **Data\Migrations:** Contém as migrações do Entity Framework para gerenciar o esquema do banco de dados.   
+   - **Application:** Console que é o consumidor da fila RabbitMQ.
 
 ## Grupo 70:   
 
