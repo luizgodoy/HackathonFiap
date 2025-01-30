@@ -25,7 +25,7 @@ namespace Hackathon.Data.Migrations
                     StartAt = table.Column<DateTime>(type: "DATE", nullable: false),
                     FinishAt = table.Column<DateTime>(type: "DATE", nullable: false),
                     DoctorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
