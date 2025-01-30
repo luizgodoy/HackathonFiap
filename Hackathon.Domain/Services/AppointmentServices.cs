@@ -1,4 +1,5 @@
-﻿using Hackathon.Core.Models;
+﻿using Azure.Identity;
+using Hackathon.Core.Models;
 using Hackathon.Data.Interfaces;
 using Hackathon.Domain.Interfaces;
 using Hackathon.Domain.Validators;
@@ -54,6 +55,12 @@ namespace Hackathon.Domain.Services
         public async Task Update(Appointment appointment)
         {
             await _appointmentRepository.Update(appointment);
+        }
+
+        public Task Notify(Appointment appointment)
+        {
+            // TODO: Service de envio de e-mail
+            return Task.CompletedTask;
         }
     }
 }

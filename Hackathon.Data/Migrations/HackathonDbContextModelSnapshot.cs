@@ -38,7 +38,7 @@ namespace Hackathon.Data.Migrations
                     b.Property<DateTime>("FinishAt")
                         .HasColumnType("DATE");
 
-                    b.Property<Guid>("PatientId")
+                    b.Property<Guid?>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartAt")
