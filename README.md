@@ -6,6 +6,7 @@ Este projeto é uma Web API desenvolvida em C# que fornece endpoints para gerenc
 
 - **.NET Core** .NET 8
 - **ASP.NET Core** para construção da Web API
+- **Identity + JWT** para autenticação e autorização baseada em roles
 - **Entity Framework Core** ORM para acesso a dados
 - **FluentValidation** para validação dos dados de entrada da camada services
 - **Swagger/OpenAPI** para documentação da API
