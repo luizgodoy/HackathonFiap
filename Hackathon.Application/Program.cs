@@ -51,7 +51,7 @@ namespace Hackathon.Application
                         h.Password(rabbitMqSettings["Password"] ?? "guest");
                     });
 
-                    const string exchangeName = "hackaton.direct";
+                    const string exchangeName = "hackathon.direct";
 
                     cfg.ReceiveEndpoint("update-appointment", e =>
                     {
