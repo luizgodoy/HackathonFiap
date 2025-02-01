@@ -14,5 +14,7 @@ namespace Hackathon.Domain.Interfaces
         Task<User> GetById(Guid id);
 
         Task Delete(Guid id);
+
+        Task<string> LoginUser(LoginDto login);
     }
 }

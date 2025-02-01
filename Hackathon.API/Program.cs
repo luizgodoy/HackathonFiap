@@ -1,4 +1,3 @@
-
 using Hackathon.API.AutoMapper;
 using Hackathon.API.Configurations;
 using Hackathon.Contract.Contracts;
@@ -26,7 +25,7 @@ namespace Hackathon.API
 
             // Configuração do AutoMapper
             builder.Services.AddAutoMapper(typeof(MapperProfile), typeof(MapperProfile));
-
+            
             // Add services to the container.
             builder.Services.ResolveDependencies();
             builder.Services.AddControllers();
@@ -59,10 +58,10 @@ namespace Hackathon.API
                         p.ExchangeType = "direct";
                     });                    
                 });
-            });*/
+            });
 
             //Configurações Identity
-            builder.Services.AddIdentity<User, IdentityRole>()
+            builder.Services.AddIdentity<User, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<HackathonDbContext>()
                 .AddDefaultTokenProviders();
 

@@ -1,13 +1,8 @@
 ﻿using Hackathon.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hackathon.Core.DTO
 {
-    public class NewUserDto : Entity
+    public class NewUserDto
     {
         public string Name { get; set; }
         public string CPF { get; set; }

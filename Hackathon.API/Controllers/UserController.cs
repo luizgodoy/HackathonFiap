@@ -12,7 +12,7 @@ namespace Hackathon.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userService;
-        private readonly IMapper _mapper;
+        private readonly IMapper _mapper;        
 
         public UserController(IUserServices userService, IMapper mapper)
         {
@@ -35,6 +35,22 @@ namespace Hackathon.API.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> Login([FromBody] LoginDto login)
+        {
+            try
+            {
+                return await _userService.LoginUser(login);
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new { message = ex.Message });
+            }            
         }
 
         [HttpGet]
