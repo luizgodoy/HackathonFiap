@@ -2,8 +2,11 @@
 
 namespace Hackathon.Data.Interfaces
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetAll(Role? role = null);
+        Task<IEnumerable<User>> GetAll(Role? role = null);        
+        Task<User> GetById(Guid id);
+        Task Update(User entity);
+        Task Delete(Guid id);        
     }
 }

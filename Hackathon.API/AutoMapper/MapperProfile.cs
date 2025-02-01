@@ -13,7 +13,11 @@ namespace Hackathon.API.AutoMapper
             CreateMap<EditAppointmentMessage, AppointmentDto>().ReverseMap();
 
             CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<User, NewUserDto>().ReverseMap();
+            CreateMap<NewUserDto, User>()
+                .ForMember(x => x.Email, opt => opt.MapFrom(x => x.Email))
+                .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email))
+                .ForMember(x => x.NormalizedEmail, opt => opt.MapFrom(x => x.Email.ToUpper()))
+                .ReverseMap();
         }
     }
 }

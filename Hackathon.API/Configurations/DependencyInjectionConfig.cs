@@ -9,8 +9,14 @@ namespace Hackathon.API.Configurations
     {
         public static IServiceCollection ResolveDependencies(this IServiceCollection services)
         {
+            //Services
             services.AddScoped<IAppointmentServices, AppointmentServices>();
+            services.AddScoped<IUserServices, UserServices>();
+
+            //Repositories
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
             return services;
         }
     }
