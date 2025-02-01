@@ -102,7 +102,7 @@ namespace Hackathon.API.Controllers
                 var user = _mapper.Map<User>(userDto);
 
                 await _userService.Update(user);
-                return NoContent();
+                return Ok(userDto);
             }
             catch (Exception ex)
             {
@@ -120,7 +120,7 @@ namespace Hackathon.API.Controllers
                     return NotFound(new { message = "Usuário não encontrado." });
 
                 await _userService.Delete(id);
-                return NoContent();
+                return Ok("Usuário excluido com sucesso...");
             }
             catch (Exception ex)
             {

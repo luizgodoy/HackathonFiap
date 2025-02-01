@@ -96,6 +96,8 @@ namespace Hackathon.Domain.Services
             if (existingUser == null)
                 throw new Exception("Usuário não encontrado");
 
+            user.Password = existingUser.Password;
+
             var userValidator = new UserValidator();
             var result = userValidator.Validate(user);
 
