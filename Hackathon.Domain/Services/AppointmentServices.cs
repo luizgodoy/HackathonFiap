@@ -1,18 +1,28 @@
 ﻿using Azure.Identity;
+using Hackathon.Contract.Contracts;
+using Hackathon.Core.DTO;
 using Hackathon.Core.Models;
 using Hackathon.Data.Interfaces;
 using Hackathon.Domain.Interfaces;
 using Hackathon.Domain.Validators;
+using MassTransit;
+using System.Net.Mail;
 
 namespace Hackathon.Domain.Services
 {
     public class AppointmentServices : IAppointmentServices
     {
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly EmailMessageSettings _emailMessageSettings;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public AppointmentServices(IAppointmentRepository appointmentRepository)
+        public AppointmentServices(IAppointmentRepository appointmentRepository, IPublishEndpoint publishEndpoint, IUserRepository userRepository, EmailMessageSettings emailMessageSettings)
         {            
             _appointmentRepository = appointmentRepository;
+            _publishEndpoint = publishEndpoint;
+            _userRepository = userRepository;
+            _emailMessageSettings = emailMessageSettings;
         }
 
         public async Task Create(Appointment appointment)
@@ -57,10 +67,22 @@ namespace Hackathon.Domain.Services
             await _appointmentRepository.Update(appointment);
         }
 
-        public Task Notify(Appointment appointment)
+        public async Task Notify(Appointment appointment)
         {
-            // TODO: Service de envio de e-mail
-            return Task.CompletedTask;
+            if (appointment == null)
+                Console.WriteLine("Dados da consulta nulo, a notificação não será criada");
+
+            var doctor = _userRepository.GetById(appointment!.DoctorId).Result;
+
+            var notificationMsg = new EmailNotificationMessage()
+            {
+                RecipientEmail = doctor.Email,
+                RecipientName = doctor.Name,
+                Body = _emailMessageSettings.Body,
+                Subject = _emailMessageSettings.Subject,
+            };
+
+            await _publishEndpoint.Publish(notificationMsg);
         }
     }
 }

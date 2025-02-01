@@ -1,5 +1,6 @@
 ﻿using Hackathon.Application.AutoMapper;
 using Hackathon.Application.Consumers;
+using Hackathon.Core.DTO;
 using Hackathon.Data.Context;
 using Hackathon.Data.Interfaces;
 using Hackathon.Data.Repository;
@@ -31,6 +32,9 @@ namespace Hackathon.Application
             // Injeção de dependências para serviços e repositórios
             services.AddScoped<IAppointmentServices, AppointmentServices>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+            var emailSettings = hostContext.Configuration.GetSection("EmailMessageSettings").Get<EmailMessageSettings>();
+            services.AddSingleton(emailSettings);
 
             // Configuração do contexto de banco de dados
             var connectionString = hostContext.Configuration.GetConnectionString("SqlConnection");

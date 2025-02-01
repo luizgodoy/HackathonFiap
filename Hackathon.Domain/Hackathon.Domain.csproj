@@ -8,9 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="MassTransit" Version="8.3.6" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hackathon.Contract\Hackathon.Contract.csproj" />
     <ProjectReference Include="..\Hackathon.Core\Hackathon.Core.csproj" />
     <ProjectReference Include="..\Hackathon.Data\Hackathon.Data.csproj" />
   </ItemGroup>

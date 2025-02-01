@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Hackathon.NotificationService": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
