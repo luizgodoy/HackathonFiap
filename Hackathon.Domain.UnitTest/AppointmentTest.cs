@@ -1,5 +1,7 @@
+using Hackathon.Core.DTO;
 using Hackathon.Core.Models;
 using Hackathon.Domain.Services;
+using MassTransit;
 using Moq;
 
 namespace Hackathon.Domain.UnitTest
@@ -21,8 +23,15 @@ namespace Hackathon.Domain.UnitTest
                 PatientId = new Guid()
             };
 
-            var mockRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
-            var appointmentService = new AppointmentServices(mockRepository.Object);
+            var emailSettings = new EmailMessageSettings() { 
+                Body = "<html><head><meta charset='UTF-8'><title>Notificação de Consulta</title></head><body style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'><p>Olá, Dr. <strong>{nome_do_médico}</strong>!</p><p>Você tem uma <strong>nova consulta marcada!</strong></p><p><strong>Paciente:</strong> {nome_do_paciente}</p><p><strong>Data e horário:</strong> {data} às {horário_agendado}</p><br><p>Atenciosamente,</p><p><em>Sua Clínica</em></p></body></html>", 
+                Subject = "Health&Med - Nova consulta agendada"
+            };
+
+            var mockAppointmentRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
+            var mockUserRepository = new Mock<Hackathon.Data.Interfaces.IUserRepository>();
+            var mockPublishEndpoint = new Mock<IPublishEndpoint>();
+            var appointmentService = new AppointmentServices(mockAppointmentRepository.Object, mockPublishEndpoint.Object, mockUserRepository.Object, emailSettings);
 
             // Act
             var result = appointmentService.Create(appointment);
@@ -43,8 +52,16 @@ namespace Hackathon.Domain.UnitTest
                 FinishAt = new DateTime(2025, 1, 10, 11, 0, 0, 0),                
             };
 
-            var mockRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
-            var appointmentService = new AppointmentServices(mockRepository.Object);
+            var emailSettings = new EmailMessageSettings()
+            {
+                Body = "<html><head><meta charset='UTF-8'><title>Notificação de Consulta</title></head><body style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'><p>Olá, Dr. <strong>{nome_do_médico}</strong>!</p><p>Você tem uma <strong>nova consulta marcada!</strong></p><p><strong>Paciente:</strong> {nome_do_paciente}</p><p><strong>Data e horário:</strong> {data} às {horário_agendado}</p><br><p>Atenciosamente,</p><p><em>Sua Clínica</em></p></body></html>",
+                Subject = "Health&Med - Nova consulta agendada"
+            };
+
+            var mockAppointmentRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
+            var mockUserRepository = new Mock<Hackathon.Data.Interfaces.IUserRepository>();
+            var mockPublishEndpoint = new Mock<IPublishEndpoint>();
+            var appointmentService = new AppointmentServices(mockAppointmentRepository.Object, mockPublishEndpoint.Object, mockUserRepository.Object, emailSettings);
 
             // Act
             var result = appointmentService.Create(appointment);
@@ -65,9 +82,17 @@ namespace Hackathon.Domain.UnitTest
                 DoctorId = new Guid(),
                 PatientId = new Guid()
             };
+            
+            var emailSettings = new EmailMessageSettings()
+            {
+                Body = "<html><head><meta charset='UTF-8'><title>Notificação de Consulta</title></head><body style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'><p>Olá, Dr. <strong>{nome_do_médico}</strong>!</p><p>Você tem uma <strong>nova consulta marcada!</strong></p><p><strong>Paciente:</strong> {nome_do_paciente}</p><p><strong>Data e horário:</strong> {data} às {horário_agendado}</p><br><p>Atenciosamente,</p><p><em>Sua Clínica</em></p></body></html>",
+                Subject = "Health&Med - Nova consulta agendada"
+            };
 
-            var mockRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
-            var appointmentService = new AppointmentServices(mockRepository.Object);
+            var mockAppointmentRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
+            var mockUserRepository = new Mock<Hackathon.Data.Interfaces.IUserRepository>();
+            var mockPublishEndpoint = new Mock<IPublishEndpoint>();
+            var appointmentService = new AppointmentServices(mockAppointmentRepository.Object, mockPublishEndpoint.Object, mockUserRepository.Object, emailSettings);
 
             // Act
             var result = appointmentService.Create(appointment);
@@ -89,8 +114,16 @@ namespace Hackathon.Domain.UnitTest
                 PatientId = new Guid()
             };
 
-            var mockRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
-            var appointmentService = new AppointmentServices(mockRepository.Object);
+            var emailSettings = new EmailMessageSettings()
+            {
+                Body = "<html><head><meta charset='UTF-8'><title>Notificação de Consulta</title></head><body style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'><p>Olá, Dr. <strong>{nome_do_médico}</strong>!</p><p>Você tem uma <strong>nova consulta marcada!</strong></p><p><strong>Paciente:</strong> {nome_do_paciente}</p><p><strong>Data e horário:</strong> {data} às {horário_agendado}</p><br><p>Atenciosamente,</p><p><em>Sua Clínica</em></p></body></html>",
+                Subject = "Health&Med - Nova consulta agendada"
+            };
+
+            var mockAppointmentRepository = new Mock<Hackathon.Data.Interfaces.IAppointmentRepository>();
+            var mockUserRepository = new Mock<Hackathon.Data.Interfaces.IUserRepository>();
+            var mockPublishEndpoint = new Mock<IPublishEndpoint>();
+            var appointmentService = new AppointmentServices(mockAppointmentRepository.Object, mockPublishEndpoint.Object, mockUserRepository.Object, emailSettings);
 
             // Act
             var result = appointmentService.Create(appointment);
