@@ -7,6 +7,6 @@
         public DateTime StartAt { get; set;}
         public DateTime FinishAt { get; set; }
         public Guid DoctorId { get; set; }
-        public Guid PatientId { get; set; }
+        public Guid? PatientId { get; set; }
     }
 }

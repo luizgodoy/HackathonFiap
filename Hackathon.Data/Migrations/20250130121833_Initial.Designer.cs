@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hackathon.Data.Migrations
 {
     [DbContext(typeof(HackathonDbContext))]
-    [Migration("20250129121836_Initial")]
+    [Migration("20250130121833_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace Hackathon.Data.Migrations
                     b.Property<DateTime>("FinishAt")
                         .HasColumnType("DATE");
 
-                    b.Property<Guid>("PatientId")
+                    b.Property<Guid?>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartAt")

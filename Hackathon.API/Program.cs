@@ -36,19 +36,18 @@ namespace Hackathon.API
             builder.Services.AddScoped<IUserServices, UserServices>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-            // Configuração do MassTransit com RabbitMQ
-            /*
+            // Configuração do MassTransit com RabbitMQ            
             var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
             builder.Services.AddMassTransit(x =>
             {
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     // Host do RabbitMQ definido no appsettings.json
-                    //cfg.Host(rabbitMqSettings["Host"], "/", h =>
-                   // {
-                        //h.Username(rabbitMqSettings["Username"]);
-                       // h.Password(rabbitMqSettings["Password"]);
-                  //  });
+                    cfg.Host(rabbitMqSettings["Host"], "/", h =>
+                    {
+                        h.Username(rabbitMqSettings["Username"]);
+                        h.Password(rabbitMqSettings["Password"]);
+                    });
                    
                     cfg.Message<EditAppointmentMessage>(p =>
                     {
