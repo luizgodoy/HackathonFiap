@@ -137,12 +137,22 @@ namespace Hackathon.Domain.UnitTest
                 CRM = "123456"
             };
 
-            // Act
-            _mockRepository.Setup(repo => repo.Create(It.IsAny<User>())).Returns(Task.CompletedTask);
-            await _userService.Create(doctor);
+            _mockUserManager.Setup(um => um.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
 
-            //Assert
-            _mockRepository.Verify(repo => repo.Create(It.IsAny<User>()), Times.Once);
+            // Act
+            var result = await _mockUserManager.Object.CreateAsync(doctor);
+
+            // Assert
+            _mockUserManager.Verify(um => um.CreateAsync(
+                It.Is<User>(u =>
+                    u.Email == doctor.Email &&
+                    u.UserName == doctor.UserName &&
+                    u.Role == doctor.Role &&
+                    u.CRM == doctor.CRM &&
+                    u.Password == doctor.Password
+                )
+            ), Times.Once);
         }
 
         [Fact]
