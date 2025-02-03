@@ -29,6 +29,7 @@ namespace Hackathon.NotificationService
                 services.AddAutoMapper(typeof(MapperProfile), typeof(MapperProfile));
 
                 // Injeção de dependências para serviços e repositórios
+                services.AddScoped<ISmtpClient, SmtpClientWrapper>();
                 services.AddScoped<IEmailServices, EmailServices>();
 
                 var emailSettings = hostContext.Configuration.GetSection("EmailSettings").Get<EmailServerSettings>();
@@ -43,25 +44,23 @@ namespace Hackathon.NotificationService
                     x.UsingRabbitMq((context, cfg) =>
                     {
                         // Configurações do RabbitMQ lidas do appsettings.json
-                        cfg.Host(rabbitMqSettings["Host"], 5672, "/", h =>
+                        cfg.Host("192.168.0.15", "/", h =>
                         {
                             h.Username(rabbitMqSettings["Username"] ?? "guest");
                             h.Password(rabbitMqSettings["Password"] ?? "guest");
                         });
 
-                        const string exchangeName = "hackathon.direct";
-
                         cfg.ReceiveEndpoint("email-notification", e =>
                         {
                             e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-                            e.ConfigureConsumeTopology = false;
+                            //e.ConfigureConsumeTopology = false;
 
-                            e.Bind(exchangeName, s =>
-                            {
-                                s.RoutingKey = "email-notification";
-                                s.ExchangeType = ExchangeType.Direct;
-                                s.Durable = true;
-                            });
+                            //e.Bind(exchangeName, s =>
+                            //{
+                            //    s.RoutingKey = "email-notification";
+                            //    s.ExchangeType = ExchangeType.Direct;
+                            //    s.Durable = true;
+                            //});
 
                             e.ConfigureConsumer<EmailNotificationConsumer>(context);
                         });

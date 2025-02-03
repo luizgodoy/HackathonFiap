@@ -8,12 +8,12 @@ namespace Hackathon.NotificationService.Services
     public class EmailServices : IEmailServices
     {
         private readonly EmailServerSettings _emailSettings;
-        private readonly Func<ISmtpClient> _smtpClientFactory;
+        private readonly ISmtpClient _smtpClient;
 
-        public EmailServices(EmailServerSettings emailSettings, Func<ISmtpClient> smtpClientFactory)
+        public EmailServices(EmailServerSettings emailSettings, ISmtpClient smtpClientFactory)
         {
             _emailSettings = emailSettings ?? throw new ArgumentNullException(nameof(emailSettings));
-            _smtpClientFactory = smtpClientFactory ?? throw new ArgumentNullException(nameof(smtpClientFactory));
+            _smtpClient = smtpClientFactory ?? throw new ArgumentNullException(nameof(smtpClientFactory));
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
@@ -27,7 +27,7 @@ namespace Hackathon.NotificationService.Services
                     return;
                 }
 
-                using (var client = _smtpClientFactory())
+                using (var client = _smtpClient)
                 {
                     var message = new MailMessage
                     {

@@ -1,4 +1,7 @@
-﻿using Hackathon.NotificationService.Interfaces;
+﻿using Hackathon.Core.DTO;
+using Hackathon.NotificationService.Interfaces;
+using RabbitMQ.Client;
+using System.Net;
 using System.Net.Mail;
 
 namespace Hackathon.NotificationService.Services
@@ -7,9 +10,15 @@ namespace Hackathon.NotificationService.Services
     {
         private readonly SmtpClient _smtpClient;
 
-        public SmtpClientWrapper(string host, int port)
+        public SmtpClientWrapper(EmailServerSettings settings)
         {
-            _smtpClient = new SmtpClient(host, port);
+            _smtpClient = new SmtpClient(settings.SmtpServer, settings.Port)
+            {
+                Credentials = new NetworkCredential(settings.Username, settings.Password), // Adiciona autenticação
+                EnableSsl = true, // Define se deve usar SSL
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false // Garante que credenciais personalizadas sejam usadas
+            };
         }
 
         public async Task SendMailAsync(MailMessage message)
@@ -22,5 +31,4 @@ namespace Hackathon.NotificationService.Services
             _smtpClient.Dispose();
         }
     }
-
 }

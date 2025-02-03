@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hackathon.Contract\Hackathon.Contract.csproj" />
+    <ProjectReference Include="..\Hackathon.Core\Hackathon.Core.csproj" />
   </ItemGroup>
 
 </Project>

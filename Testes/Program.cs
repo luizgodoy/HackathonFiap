@@ -2,6 +2,7 @@
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Testes;
 
 
 var host = Host.CreateDefaultBuilder()
@@ -11,7 +12,7 @@ var host = Host.CreateDefaultBuilder()
                 {
                     x.UsingRabbitMq((ctx, cfg) =>
                     {
-                        cfg.Host("localhost", 5672, "/", h =>
+                        cfg.Host("192.168.0.15", 5672, "/", h =>
                         {
                             h.Username("guest");
                             h.Password("guest");
@@ -25,15 +26,8 @@ await host.StartAsync();
 
 var publishEndpoint = host.Services.GetRequiredService<IPublishEndpoint>();
 
-var message = new EmailNotificationMessage
-{
-    RecipientEmail = "test@example.com",
-    Subject = "Nova Consulta",
-    Body = "Você tem uma consulta agendada para amanhã às 14h."
-};
+Publisher.PublishEmail(publishEndpoint);
 
-await publishEndpoint.Publish(message);
-
-Console.WriteLine("📩 Mensagem publicada com sucesso!");
+Publisher.PublishEmail(publishEndpoint);
 
 await host.StopAsync();

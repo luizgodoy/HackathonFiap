@@ -33,7 +33,7 @@ namespace Hackathon.Application
             services.AddScoped<IAppointmentServices, AppointmentServices>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
-            var emailSettings = hostContext.Configuration.GetSection("EmailMessageSettings").Get<EmailMessageSettings>();
+            var emailSettings = hostContext.Configuration.GetSection("EmailMessage").Get<EmailMessageSettings>();
             services.AddSingleton(emailSettings);
 
             // Configuração do contexto de banco de dados

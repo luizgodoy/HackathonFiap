@@ -30,7 +30,7 @@ namespace Hackathon.NotificationService.UnitTest
 
             _smtpClientMock = new Mock<ISmtpClient>();
 
-            _emailService = new EmailServices(_emailSettings, () => _smtpClientMock.Object);
+            _emailService = new EmailServices(_emailSettings, _smtpClientMock.Object);
         }
 
         [Test]
