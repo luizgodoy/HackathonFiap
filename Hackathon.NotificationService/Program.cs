@@ -44,7 +44,7 @@ namespace Hackathon.NotificationService
                     x.UsingRabbitMq((context, cfg) =>
                     {
                         // Configurações do RabbitMQ lidas do appsettings.json
-                        cfg.Host("192.168.0.15", "/", h =>
+                        cfg.Host(rabbitMqSettings["Host"], "/", h =>
                         {
                             h.Username(rabbitMqSettings["Username"] ?? "guest");
                             h.Password(rabbitMqSettings["Password"] ?? "guest");
