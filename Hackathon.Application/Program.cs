@@ -55,19 +55,9 @@ namespace Hackathon.Application
                         h.Password(rabbitMqSettings["Password"] ?? "guest");
                     });
 
-                    const string exchangeName = "hackathon.direct";
-
                     cfg.ReceiveEndpoint("update-appointment", e =>
                     {
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-                        e.ConfigureConsumeTopology = false;
-
-                        e.Bind(exchangeName, s =>
-                        {
-                            s.RoutingKey = "update.appointment";
-                            s.ExchangeType = ExchangeType.Direct;
-                            s.Durable = true;
-                        });
 
                         e.ConfigureConsumer<EditAppointmentConsumer>(context);
                     });

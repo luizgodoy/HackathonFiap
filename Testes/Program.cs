@@ -1,5 +1,4 @@
-﻿using Hackathon.Contract.Contracts;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Testes;
@@ -28,6 +27,6 @@ var publishEndpoint = host.Services.GetRequiredService<IPublishEndpoint>();
 
 Publisher.PublishEmail(publishEndpoint);
 
-Publisher.PublishEmail(publishEndpoint);
+Publisher.PublishAppointment(publishEndpoint);
 
 await host.StopAsync();

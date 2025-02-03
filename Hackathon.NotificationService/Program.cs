@@ -53,14 +53,6 @@ namespace Hackathon.NotificationService
                         cfg.ReceiveEndpoint("email-notification", e =>
                         {
                             e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-                            //e.ConfigureConsumeTopology = false;
-
-                            //e.Bind(exchangeName, s =>
-                            //{
-                            //    s.RoutingKey = "email-notification";
-                            //    s.ExchangeType = ExchangeType.Direct;
-                            //    s.Durable = true;
-                            //});
 
                             e.ConfigureConsumer<EmailNotificationConsumer>(context);
                         });

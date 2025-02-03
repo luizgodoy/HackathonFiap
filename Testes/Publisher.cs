@@ -13,16 +13,23 @@ namespace Testes
     {
         internal static async void PublishEmail(IPublishEndpoint publishEndpoint)
         {
-            var message = new EmailNotificationMessage
+            try
             {
-                RecipientEmail = "mr.zampieri@live.com",
-                Subject = "Nova Consulta",
-                Body = "Você tem uma consulta agendada para amanhã às 14h."
-            };
+                var message = new EmailNotificationMessage
+                {
+                    RecipientEmail = "mr.zampieri@live.com",
+                    Subject = "Nova Consulta",
+                    Body = "Você tem uma consulta agendada para amanhã às 14h."
+                };
 
-            await publishEndpoint.Publish(message);
+                await publishEndpoint.Publish(message);
 
-            Console.WriteLine("📩 Mensagem publicada com sucesso!");
+                Console.WriteLine("📩 Mensagem publicada com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro {ex.Message}");
+            }
         }
 
         internal static async void PublishAppointment(IPublishEndpoint publishEndpoint)
