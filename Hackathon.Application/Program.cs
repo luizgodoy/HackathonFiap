@@ -1,5 +1,6 @@
 ﻿using Hackathon.Application.AutoMapper;
 using Hackathon.Application.Consumers;
+using Hackathon.Core.DTO;
 using Hackathon.Data.Context;
 using Hackathon.Data.Interfaces;
 using Hackathon.Data.Repository;
@@ -32,6 +33,9 @@ namespace Hackathon.Application
             services.AddScoped<IAppointmentServices, AppointmentServices>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
+            var emailSettings = hostContext.Configuration.GetSection("EmailMessage").Get<EmailMessageSettings>();
+            services.AddSingleton(emailSettings);
+
             // Configuração do contexto de banco de dados
             var connectionString = hostContext.Configuration.GetConnectionString("SqlConnection");
             services.AddDbContext<HackathonDbContext>(options => options.UseSqlServer(connectionString));
@@ -51,19 +55,9 @@ namespace Hackathon.Application
                         h.Password(rabbitMqSettings["Password"] ?? "guest");
                     });
 
-                    const string exchangeName = "hackathon.direct";
-
                     cfg.ReceiveEndpoint("update-appointment", e =>
                     {
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-                        e.ConfigureConsumeTopology = false;
-
-                        e.Bind(exchangeName, s =>
-                        {
-                            s.RoutingKey = "update.appointment";
-                            s.ExchangeType = ExchangeType.Direct;
-                            s.Durable = true;
-                        });
 
                         e.ConfigureConsumer<EditAppointmentConsumer>(context);
                     });

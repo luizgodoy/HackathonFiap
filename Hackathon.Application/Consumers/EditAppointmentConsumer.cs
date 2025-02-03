@@ -26,7 +26,7 @@ namespace Hackathon.Application.Consumers
                 if (appointment?.PatientId == null)
                 {
                     // Atualiza registro com o código do paciente
-                    appointment.Title = context.Message.Title;
+                    appointment!.Title = context.Message.Title;
                     appointment.Description = context.Message.Description;
                     appointment.PatientId = context.Message.PatientId;
 
