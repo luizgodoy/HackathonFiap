@@ -1,6 +1,14 @@
-﻿using Hackathon.Core.Models;
+﻿using Hackathon.Core.DTO;
+using Hackathon.Core.Models;
 using Hackathon.Data.Interfaces;
+using Hackathon.Domain.Interfaces;
 using Hackathon.Domain.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Hackathon.Domain.UnitTest
@@ -8,12 +16,49 @@ namespace Hackathon.Domain.UnitTest
     public class UserServiceTests
     {
         private readonly Mock<IUserRepository> _mockRepository;
+        private readonly Mock<UserManager<User>> _mockUserManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly Mock<RoleManager<IdentityRole<Guid>>> _mockRoleManager;
+        private readonly Mock<IConfiguration> _mockConfiguration;
         private readonly UserServices _userService;
 
         public UserServiceTests()
         {
+            // Mock IUserRepository
             _mockRepository = new Mock<IUserRepository>();
-            _userService = new UserServices(_mockRepository.Object);
+
+            _mockUserManager = new Mock<UserManager<User>>(
+                new Mock<IUserStore<User>>().Object,
+                null, null, null, null, null, null, null, null
+            );
+            
+            _mockUserManager.Setup(um => um.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            var mockUserClaimsPrincipalFactory = new Mock<IUserClaimsPrincipalFactory<User>>();
+            var mockIdentityOptions = new Mock<IOptions<IdentityOptions>>();
+            var mockLogger = new Mock<ILogger<SignInManager<User>>>();
+            var mockAuthenticationSchemeProvider = new Mock<IAuthenticationSchemeProvider>();
+
+            _signInManager = new SignInManager<User>(
+                _mockUserManager.Object,
+                mockHttpContextAccessor.Object,
+                mockUserClaimsPrincipalFactory.Object,
+                mockIdentityOptions.Object,
+                mockLogger.Object,
+                mockAuthenticationSchemeProvider.Object
+            );
+
+            _mockRoleManager = new Mock<RoleManager<IdentityRole<Guid>>>(
+                new Mock<IRoleStore<IdentityRole<Guid>>>().Object,
+                null, null, null, null
+            );
+
+            _mockConfiguration = new Mock<IConfiguration>();
+            _mockConfiguration.Setup(config => config["Jwt:Key"]).Returns("qwer-asdf-zxcv-1234-!@#$-chave-super-secreta");
+
+            _userService = new UserServices(_mockRepository.Object, _mockUserManager.Object, _signInManager, _mockRoleManager.Object, _mockConfiguration.Object);
         }
 
         [Fact]
@@ -85,17 +130,29 @@ namespace Hackathon.Domain.UnitTest
                 Name = "Dr. João",
                 CPF = "12345678901",
                 Email = "doctor@clinicaX.com",
+                UserName = "doctor@clinicaX.com",
+                NormalizedEmail = ("doctor@clinicaX.com").ToUpper(),
                 Password = "MAddsa123AA!",
                 Role = Role.Doctor,
                 CRM = "123456"
             };
 
-            // Act
-            _mockRepository.Setup(repo => repo.Create(It.IsAny<User>())).Returns(Task.CompletedTask);
-            await _userService.Create(doctor);
+            _mockUserManager.Setup(um => um.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
 
-            //Assert
-            _mockRepository.Verify(repo => repo.Create(It.IsAny<User>()), Times.Once);
+            // Act
+            var result = await _mockUserManager.Object.CreateAsync(doctor);
+
+            // Assert
+            _mockUserManager.Verify(um => um.CreateAsync(
+                It.Is<User>(u =>
+                    u.Email == doctor.Email &&
+                    u.UserName == doctor.UserName &&
+                    u.Role == doctor.Role &&
+                    u.CRM == doctor.CRM &&
+                    u.Password == doctor.Password
+                )
+            ), Times.Once);
         }
 
         [Fact]

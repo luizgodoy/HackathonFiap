@@ -1,13 +1,14 @@
-
 using Hackathon.API.AutoMapper;
 using Hackathon.API.Configurations;
 using Hackathon.Contract.Contracts;
+using Hackathon.Core.Models;
 using Hackathon.Data.Context;
 using Hackathon.Data.Interfaces;
 using Hackathon.Data.Repository;
 using Hackathon.Domain.Interfaces;
 using Hackathon.Domain.Services;
 using MassTransit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hackathon.API
@@ -24,7 +25,7 @@ namespace Hackathon.API
 
             // Configuração do AutoMapper
             builder.Services.AddAutoMapper(typeof(MapperProfile), typeof(MapperProfile));
-
+            
             // Add services to the container.
             builder.Services.ResolveDependencies();
             builder.Services.AddControllers();
@@ -58,7 +59,17 @@ namespace Hackathon.API
                     });                    
                 });
             });
-            
+
+            //Configurações Identity
+            builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<HackathonDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddAuthentication()
+                .AddJwtBearer();
+
+            builder.Services.AddAuthorization();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -73,10 +84,8 @@ namespace Hackathon.API
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
+            app.UseAuthentication();
             app.MapControllers();
 
             app.Run();
