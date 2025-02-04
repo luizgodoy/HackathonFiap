@@ -30,8 +30,9 @@ namespace Hackathon.Application
             services.AddAutoMapper(typeof(MapperProfile), typeof(MapperProfile));
 
             // Injeção de dependências para serviços e repositórios
-            services.AddScoped<IAppointmentServices, AppointmentServices>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IAppointmentServices, AppointmentServices>();
 
             var emailSettings = hostContext.Configuration.GetSection("EmailMessage").Get<EmailMessageSettings>();
             services.AddSingleton(emailSettings);

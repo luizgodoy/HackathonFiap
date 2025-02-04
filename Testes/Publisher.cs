@@ -11,7 +11,7 @@ namespace Testes
 {
     internal static class Publisher
     {
-        internal static async void PublishEmail(IPublishEndpoint publishEndpoint)
+        internal async static void PublishEmail(IPublishEndpoint publishEndpoint)
         {
             try
             {
@@ -32,22 +32,9 @@ namespace Testes
             }
         }
 
-        internal static async void PublishAppointment(IPublishEndpoint publishEndpoint)
+        internal async static  void PublishAppointment(IPublishEndpoint publishEndpoint)
         {
-            var appointment = new AppointmentDto
-            {
-                Id = Guid.NewGuid(),
-                Title = "Consulta",
-                Description = "Detalhes da consulta",
-                DoctorId = Guid.NewGuid(),
-                FinishAt = DateTime.Now,
-                StartAt = DateTime.Now.AddMinutes(-60),
-                PatientId = Guid.NewGuid(),
-            };
 
-            await publishEndpoint.Publish(appointment);
-
-            Console.WriteLine("📩 Mensagem publicada com sucesso!");
         }
     }
 }

@@ -1,6 +1,7 @@
 using Hackathon.API.AutoMapper;
 using Hackathon.API.Configurations;
 using Hackathon.Contract.Contracts;
+using Hackathon.Core.DTO;
 using Hackathon.Core.Models;
 using Hackathon.Data.Context;
 using Hackathon.Data.Interfaces;
@@ -34,6 +35,9 @@ namespace Hackathon.API
 
             builder.Services.AddScoped<IUserServices, UserServices>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            var emailSettings = builder.Configuration.GetSection("EmailMessage").Get<EmailMessageSettings>();
+            builder.Services.AddSingleton(emailSettings);
 
             // Configuração do MassTransit com RabbitMQ            
             var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
