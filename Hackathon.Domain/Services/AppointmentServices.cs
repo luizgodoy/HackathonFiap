@@ -70,9 +70,18 @@ namespace Hackathon.Domain.Services
         public async Task Notify(Appointment appointment)
         {
             if (appointment == null)
+            {
                 Console.WriteLine("Dados da consulta nulo, a notificação não será criada");
+                return;
+            }
 
-            var doctor = _userRepository.GetById(appointment!.DoctorId).Result;
+            var doctor = await _userRepository.GetById(appointment!.DoctorId);
+
+            if (doctor == null)
+            {
+                Console.WriteLine("Médico não encontrado, a notificação não será enviada");
+                return;
+            }
 
             var notificationMsg = new EmailNotificationMessage()
             {
