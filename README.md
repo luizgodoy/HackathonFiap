@@ -63,6 +63,9 @@ Antes de começar, certifique-se de ter instalado:
    
 ## Estrutura do Projeto
 
+![image](https://github.com/user-attachments/assets/7a54de39-fadf-4f64-aaaa-42a5ff3ab9bd)
+
+
    - **API:** Contém os controladores da API que lidam com as requisições HTTP.   
    - **Core:** Contém as classes de modelo que representam as entidades do sistema.   
    - **Data:** Contém o contexto do Entity Framework e as configurações de banco de dados.   
