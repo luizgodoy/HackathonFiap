@@ -71,9 +71,10 @@ Antes de começar, certifique-se de ter instalado:
    - **Data:** Contém o contexto do Entity Framework e as configurações de banco de dados.   
    - **Domain:** Contém a lógica de negócio da aplicação.   
    - **Data\Migrations:** Contém as migrações do Entity Framework para gerenciar o esquema do banco de dados.   
-   - **Application:** Console que é o consumidor da fila RabbitMQ.
+   - **Application:** Console consumidor da fila RabbitMQ de Agendamentos.
+   - **Notification:** Console consumidor da fila RabbitMQ de E-mails
    - **Contract:** Biblioteca com os modelos da interfaces da mensageria
-   - **Domain.UnitTest:** Implementações de testes unitários
+   - **[ProjectName].UnitTest:** Implementações de testes unitários
 
 ## Grupo 70:   
 
