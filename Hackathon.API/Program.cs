@@ -9,8 +9,12 @@ using Hackathon.Data.Repository;
 using Hackathon.Domain.Interfaces;
 using Hackathon.Domain.Services;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Hackathon.API
 {
@@ -62,6 +66,39 @@ namespace Hackathon.API
                         p.ExchangeType = "direct";
                     });                    
                 });
+            });           
+            
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hackathon", Version = "v1" });
+
+                // Adicionar suporte para autenticação JWT
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
             });
 
             //Configurações Identity
@@ -69,14 +106,33 @@ namespace Hackathon.API
                 .AddEntityFrameworkStores<HackathonDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthentication()
-                .AddJwtBearer();
+            // Configuração da autenticação JWT
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+            });
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Patient", policy => policy.RequireRole("Patient"));
+                options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor"));
+            });
 
             var app = builder.Build();
 
@@ -84,12 +140,15 @@ namespace Hackathon.API
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hackathon API v1"));
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthorization();
+            app.UseRouting();
+
             app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapControllers();
 
             app.Run();

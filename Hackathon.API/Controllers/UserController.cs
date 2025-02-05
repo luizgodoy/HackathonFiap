@@ -1,9 +1,9 @@
-﻿using Hackathon.Core.Models;
-using Hackathon.Domain.Interfaces;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Hackathon.Core.DTO;
+using Hackathon.Core.Models;
+using Hackathon.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hackathon.API.Controllers
 {
@@ -54,6 +54,7 @@ namespace Hackathon.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Doctor, Patient")]
         public async Task<IActionResult> GetAllUsers([FromQuery] Role? role = null)
         {
             try
@@ -69,6 +70,7 @@ namespace Hackathon.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Doctor, Patient")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             try
@@ -87,6 +89,7 @@ namespace Hackathon.API.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Doctor, Patient")]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserDto userDto)
         {
             try
@@ -111,6 +114,7 @@ namespace Hackathon.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
