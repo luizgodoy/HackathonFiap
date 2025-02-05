@@ -24,16 +24,15 @@ jobs:
       run: dotnet restore
 
     - name: Build Project
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build --configuration Release --no-restore
 
     - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v4  # Updated to v4
+      uses: actions/upload-artifact@v4
       with:
         name: build-output
         path: |
           **/bin/Release/
-          **/obj/Release/
-        retention-days: 1  # Optional: Set how long artifacts are kept
+        retention-days: 1
 
   test:
     name: Run Tests
@@ -50,10 +49,10 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Download Build Artifacts
-      uses: actions/download-artifact@v4  # Updated to v4
+      uses: actions/download-artifact@v4
       with:
         name: build-output
         path: .
 
     - name: Run Unit Tests
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal
