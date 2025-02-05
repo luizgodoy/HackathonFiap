@@ -78,7 +78,7 @@ namespace Hackathon.Domain.Services
 
         public async Task<string> LoginUser(LoginDto login)
         {
-            var user = await _userManager.FindByEmailAsync(login.Email) ?? throw new Exception("Email ou senha inválidos");
+            var user = await _userManager.FindByNameAsync(login.Email) ?? throw new Exception("Email ou senha inválidos");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
             if (!result.Succeeded)
