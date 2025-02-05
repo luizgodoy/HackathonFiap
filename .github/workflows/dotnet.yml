@@ -24,9 +24,5 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Set UTF-8 Encoding
-      run: |
-        export LANG=en_US.UTF-8
-        export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal | iconv -f UTF-8 -t UTF-8
