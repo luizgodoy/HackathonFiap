@@ -4,6 +4,7 @@ using Hackathon.Core.DTO;
 using Hackathon.Core.Models;
 using Hackathon.Domain.Interfaces;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hackathon.API.Controllers
@@ -24,7 +25,7 @@ namespace Hackathon.API.Controllers
         }
 
         [Route("create-appointment")]
-        //[Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor")]
         [HttpPost]
         public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto appointmentDto)
         {
@@ -33,7 +34,7 @@ namespace Hackathon.API.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Doctor, Patient")]
+        [Authorize(Roles = "Doctor, Patient")]
         [Route("retrieve-appointment/{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
@@ -48,7 +49,7 @@ namespace Hackathon.API.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Doctor, Patient")]
+        [Authorize(Roles = "Doctor, Patient")]
         [Route("list-appointment")]
         public async Task<IActionResult> GetAllAppointments()
         {
@@ -63,7 +64,7 @@ namespace Hackathon.API.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Doctor, Patient")]
+        [Authorize(Roles = "Doctor, Patient")]
         [Route("list-appointment/{doctorId:guid}")]
         public async Task<IActionResult> GetByDoctorId([FromRoute] Guid doctorId)
         {
@@ -79,7 +80,7 @@ namespace Hackathon.API.Controllers
 
         [HttpPatch]
         [Route("update-appointment")]
-        //[Authorize(Roles = "Doctor, Patient")]
+        [Authorize(Roles = "Doctor, Patient")]
         public async Task<IActionResult> UpdateAppointment([FromBody] AppointmentDto appointment)
         {
             try
@@ -99,7 +100,7 @@ namespace Hackathon.API.Controllers
 
         [HttpPatch]
         [Route("cancel-appointment")]
-        //[Authorize(Roles = "Doctor, Patient")]
+        [Authorize(Roles = "Doctor, Patient")]
         public async Task<IActionResult> CancelAppointment([FromBody] AppointmentCancelDto cancelAppointment)
         {
             try
@@ -123,7 +124,7 @@ namespace Hackathon.API.Controllers
 
         [HttpDelete]
         [Route("delete-appointment/{id:guid}")]
-        //[Authorize(Roles = "Doctor, Patient")]
+        [Authorize(Roles = "Doctor, Patient")]
         public async Task<IActionResult> DeleteAppointment([FromRoute] Guid id)
         {
             await _appointmentService.Delete(id);
