@@ -9,6 +9,7 @@ namespace Hackathon.Domain.Interfaces
         Task<IEnumerable<Appointment>> GetAll();
         Task<IEnumerable<Appointment>> GetAll(Guid? doctorId);
         Task Update(Appointment appointment);
+        Task Cancel(Appointment appointment, Guid patientId);
         Task Delete(Guid id);
         Task Notify(Appointment appointment);
     }
