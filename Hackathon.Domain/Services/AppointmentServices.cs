@@ -7,6 +7,7 @@ using Hackathon.Domain.Interfaces;
 using Hackathon.Domain.Validators;
 using MassTransit;
 using System.Net.Mail;
+using System.Numerics;
 
 namespace Hackathon.Domain.Services
 {
@@ -65,6 +66,30 @@ namespace Hackathon.Domain.Services
         public async Task Update(Appointment appointment)
         {
             await _appointmentRepository.Update(appointment);
+        }
+
+        public async Task Cancel(Appointment appointment, Guid patientId)
+        {
+            await _appointmentRepository.Update(appointment);
+
+            var patient = await _userRepository.GetById(patientId);
+            var doctor = await _userRepository.GetById(appointment.DoctorId);
+
+            if (patient == null)
+            {
+                Console.WriteLine("Paciente não encontrado, a notificação não será enviada!");
+                return;
+            }
+
+            var notificationMsg = new EmailNotificationMessage()
+            {
+                RecipientEmail = patient.Email,
+                RecipientName = patient.Name,
+                Subject = "Health&Med - Cancelamento de Consulta",
+                Body = $"<html><head><meta charset='UTF-8'><title>Notificação de Cancelamento de Consulta</title></head><body style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'><p>Olá, {patient.Name}</strong>!</p><p>Sua consulta de: {appointment.StartAt.ToShortDateString()} com o Dr. {doctor.Name} foi <strong>cancelada!</strong></p><br><p>Atenciosamente,</p><p><em>Health&Med</em></p></body></html>"
+            };
+
+            await _publishEndpoint.Publish(notificationMsg);
         }
 
         public async Task Notify(Appointment appointment)

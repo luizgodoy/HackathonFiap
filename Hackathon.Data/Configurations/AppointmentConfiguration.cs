@@ -14,6 +14,7 @@ namespace Hackathon.Data.Configurations
             builder.Property(e => e.Description).HasColumnType("VARCHAR(100)");
             builder.Property(e => e.StartAt).HasColumnType("DATE");
             builder.Property(e => e.FinishAt).HasColumnType("DATE");
+            builder.Property(e => e.Price).HasColumnType("FLOAT");
         }   
     }
 }

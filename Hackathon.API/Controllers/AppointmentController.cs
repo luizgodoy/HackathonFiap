@@ -97,6 +97,30 @@ namespace Hackathon.API.Controllers
             return Ok(appointment);
         }
 
+        [HttpPatch]
+        [Route("cancel-appointment")]
+        //[Authorize(Roles = "Doctor, Patient")]
+        public async Task<IActionResult> CancelAppointment([FromBody] AppointmentCancelDto cancelAppointment)
+        {
+            try
+            {
+                var model = await _appointmentService.GetById(cancelAppointment.Id);
+                if (model is null) return NotFound();
+                var patientId = model.PatientId;
+
+                model.Title = cancelAppointment.Title;
+                model.Description = cancelAppointment.Description;                
+                model.PatientId = null;
+
+                await _appointmentService.Cancel(model, patientId.Value);
+            }
+            catch (Exception e)
+            {
+                return (BadRequest(new { Message = e.Message }));
+            }
+            return Ok();
+        }
+
         [HttpDelete]
         [Route("delete-appointment/{id:guid}")]
         //[Authorize(Roles = "Doctor, Patient")]
