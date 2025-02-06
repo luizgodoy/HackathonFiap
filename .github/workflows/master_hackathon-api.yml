@@ -27,13 +27,37 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish-api ./Hackathon.API/Hackathon.API.csproj
 
-      - name: Upload artifact for deployment job
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{ github.workspace }}/publish-api/
+          retention-days: 1
+
+  test:
+    name: Run Tests
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-output
+        path: ${{ github.workspace }}/publish-api/
+
+    - name: Run Unit Tests
+      run: dotnet test --configuration Release --verbosity normal
 
   deploy:
     runs-on: windows-latest
@@ -65,4 +89,3 @@ jobs:
           app-name: 'Hackathon-API'
           slot-name: 'Production'
           package: .
-          
