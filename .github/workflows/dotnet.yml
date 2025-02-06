@@ -30,14 +30,13 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish API
-      run: dotnet publish -c Release -o ./publish-api ./Hackathon.API/Hackathon.API.csproj
+      run: dotnet publish -c Release -o ${{ github.workspace }}/publish-api ./Hackathon.API/Hackathon.API.csproj
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-output
-        path: |
-          ./publish-api/
+        path: ${{ github.workspace }}/publish-api/
         retention-days: 1
 
   test:
@@ -58,7 +57,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-output
-        path: .
+        path: ${{ github.workspace }}/publish-api/
 
     - name: Run Unit Tests
       run: dotnet test --configuration Release --verbosity normal
@@ -76,7 +75,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-output
-        path: .
+        path: ${{ github.workspace }}/publish-api/
 
     - name: Deploy API via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.0
@@ -84,5 +83,5 @@ jobs:
         server: ${{ secrets.AZURE_FTPS_SERVER }}
         username: ${{ secrets.AZURE_FTPS_USERNAME }}
         password: ${{ secrets.AZURE_FTPS_PASSWORD }}
-        local-dir: ./publish-api/
+        local-dir: ${{ github.workspace }}/publish-api/
         server-dir: /site/wwwroot/
