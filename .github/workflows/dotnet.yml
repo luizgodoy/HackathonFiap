@@ -30,7 +30,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish API
-      run: dotnet publish -c Release -o ./publish-api ./HackathonFiap.Api/HackathonFiap.Api.csproj
+      run: dotnet publish -c Release -o ./publish-api ./Hackathon.API/Hackathon.API.csproj
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
