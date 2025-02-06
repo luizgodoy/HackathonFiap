@@ -24,11 +24,11 @@ namespace Hackathon.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configuração do banco de dados
+            // ConfiguraÃ§Ã£o do banco de dados
             var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
             builder.Services.AddDbContext<HackathonDbContext>(options => options.UseSqlServer(connectionString));
 
-            // Configuração do AutoMapper
+            // ConfiguraÃ§Ã£o do AutoMapper
             builder.Services.AddAutoMapper(typeof(MapperProfile), typeof(MapperProfile));
             
             // Add services to the container.
@@ -43,7 +43,7 @@ namespace Hackathon.API
             var emailSettings = builder.Configuration.GetSection("EmailMessage").Get<EmailMessageSettings>();
             builder.Services.AddSingleton(emailSettings);
 
-            // Configuração do MassTransit com RabbitMQ            
+            // ConfiguraÃ§Ã£o do MassTransit com RabbitMQ            
             var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
             builder.Services.AddMassTransit(x =>
             {
@@ -75,7 +75,7 @@ namespace Hackathon.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hackathon", Version = "v1" });
 
-                // Adicionar suporte para autenticação JWT
+                // Adicionar suporte para autenticaÃ§Ã£o JWT
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -101,12 +101,12 @@ namespace Hackathon.API
                 });
             });
 
-            //Configurações Identity
+            //ConfiguraÃ§Ãµes Identity
             builder.Services.AddIdentity<User, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<HackathonDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Configuração da autenticação JWT
+            // ConfiguraÃ§Ã£o da autenticaÃ§Ã£o JWT
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -136,12 +136,8 @@ namespace Hackathon.API
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hackathon API v1"));
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hackathon API v1"));
 
             app.UseHttpsRedirection();
             app.UseRouting();
