@@ -63,7 +63,7 @@ jobs:
       run: dotnet test --configuration Release --verbosity normal
 
   deploy:
-    name: Deploy to Azure via FTPS
+    name: Deploy to Azure via FTP
     runs-on: windows-latest
     needs: test  # Só faz deploy se os testes passarem
 
@@ -77,14 +77,12 @@ jobs:
         name: build-output
         path: ${{ github.workspace }}/publish-api/
 
-    - name: Deploy API via FTPS
-      uses: liximomo/ftp-action@v2
+    - name: Deploy API via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.0
       with:
-        host: ${{ secrets.AZURE_FTPS_SERVER }}
+        server: ${{ secrets.AZURE_FTPS_SERVER }}
         username: ${{ secrets.AZURE_FTPS_USERNAME }}
         password: ${{ secrets.AZURE_FTPS_PASSWORD }}
-        local-dir: ${{ github.workspace }}/publish-api/
-        remote-dir: /site/wwwroot/
         protocol: ftps
-        port: 990
-        security: explicit
+        local-dir: ${{ github.workspace }}/publish-api/
+        server-dir: /site/wwwroot/
