@@ -32,12 +32,6 @@ jobs:
     - name: Publish API
       run: dotnet publish -c Release -o ./publish-api ./HackathonFiap.Api/HackathonFiap.Api.csproj
 
-    - name: Publish App 1
-      run: dotnet publish -c Release -o ./publish-app1 ./HackathonFiap.Front1/HackathonFiap.Front1.csproj
-
-    - name: Publish App 2
-      run: dotnet publish -c Release -o ./publish-app2 ./HackathonFiap.Front2/HackathonFiap.Front2.csproj
-
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
