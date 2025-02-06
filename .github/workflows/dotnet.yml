@@ -84,5 +84,6 @@ jobs:
         username: ${{ secrets.AZURE_FTPS_USERNAME }}
         password: ${{ secrets.AZURE_FTPS_PASSWORD }}
         protocol: ftps
+        port: 990
         local-dir: ${{ github.workspace }}/publish-api/
         server-dir: /site/wwwroot/
