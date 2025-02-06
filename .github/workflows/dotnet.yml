@@ -61,7 +61,7 @@ jobs:
         path: .
 
     - name: Run Unit Tests
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --verbosity normal
 
   deploy:
     name: Deploy to Azure via FTP
