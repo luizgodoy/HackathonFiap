@@ -81,8 +81,8 @@ jobs:
     - name: Deploy API via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4
       with:
-        server: "ftps://waws-prod-yt1-015.ftp.azurewebsites.windows.net/site/wwwroot"
-        username: "Hackathon-API\\$Hackathon-API"
-        password: "kZvpbobno7QHYB2Q8S4bTZpPXtGNg9MEWooHSisqu8iNsiQn5Dajs56w2iRt"
+        server: ${{ secrets.AZURE_FTPS_SERVER }}
+        username: ${{ secrets.AZURE_FTPS_USERNAME }}
+        password: ${{ secrets.AZURE_FTPS_PASSWORD }}
         local-dir: ./publish-api/
         server-dir: /site/wwwroot/
