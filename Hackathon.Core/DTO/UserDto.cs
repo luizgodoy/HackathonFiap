@@ -15,5 +15,6 @@ namespace Hackathon.Core.DTO
         public string Email { get; set; }
         public Role Role { get; set; }
         public string CRM { get; set; } = string.Empty;
+        public IEnumerable<SpecialtyDto> Specialties { get; set; }
     }
 }

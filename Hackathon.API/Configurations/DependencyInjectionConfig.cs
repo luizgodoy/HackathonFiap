@@ -12,10 +12,12 @@ namespace Hackathon.API.Configurations
             //Services
             services.AddScoped<IAppointmentServices, AppointmentServices>();
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<ISpecialtyService, SpecialtyService>();
 
             //Repositories
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 
             return services;
         }

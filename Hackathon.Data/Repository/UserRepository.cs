@@ -1,4 +1,5 @@
-﻿using Hackathon.Core.Models;
+﻿using Hackathon.Core.DTO;
+using Hackathon.Core.Models;
 using Hackathon.Data.Context;
 using Hackathon.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -26,17 +27,18 @@ namespace Hackathon.Data.Repository
             await SaveChanges();
         }
 
-        public async Task<IEnumerable<User>> GetAll(Role? role = null)
+        public async Task<IEnumerable<User>> GetAll(Role? role, string specialty)
         {
             
             var query = _context.Users.AsQueryable();
 
-            if (role.HasValue)
-            {
+            if (role.HasValue)                            
                 query = query.Where(user => user.Role == role.Value);
-            }
 
-            return await query.ToListAsync();
+            if (!string.IsNullOrEmpty(specialty))
+                query = query.Where(user => user.Specialties.Any(x => x.MedicalSpecialty == specialty));
+
+            return await query.Include(x => x.Specialties).ToListAsync();
         }
 
         public async Task<User> GetById(Guid id)

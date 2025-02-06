@@ -12,7 +12,7 @@ namespace Hackathon.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userService;
-        private readonly IMapper _mapper;        
+        private readonly IMapper _mapper;
 
         public UserController(IUserServices userService, IMapper mapper)
         {
@@ -20,14 +20,14 @@ namespace Hackathon.API.Controllers
             _mapper = mapper;
         }
 
-       
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> CreateUser([FromBody] NewUserDto userDto)
         {
             try
             {
-                var user = _mapper.Map<User>(userDto); 
+                var user = _mapper.Map<User>(userDto);
                 await _userService.Create(user);
                 return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, userDto);
             }
@@ -50,17 +50,17 @@ namespace Hackathon.API.Controllers
             {
 
                 return BadRequest(new { message = ex.Message });
-            }            
+            }
         }
 
         [HttpGet]
         [Authorize(Roles = "Doctor, Patient")]
-        public async Task<IActionResult> GetAllUsers([FromQuery] Role? role = null)
+        public async Task<IActionResult> GetAllUsers([FromQuery] UserFilterDto filter)
         {
             try
             {
-                var users = await _userService.GetAll(role);
-                var userDtos = _mapper.Map<IEnumerable<UserDto>>(users); 
+                var users = await _userService.GetAll(filter);
+                var userDtos = _mapper.Map<IEnumerable<UserDto>>(users);
                 return Ok(userDtos);
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace Hackathon.API.Controllers
                 if (id != userDto.Id)
                     return BadRequest(new { message = "ID informado não corresponde ao usuário." });
 
-              
+
                 var existingUser = await _userService.GetById(id);
                 if (existingUser == null)
                     return NotFound(new { message = "Usuário não encontrado." });

@@ -9,7 +9,7 @@ namespace Hackathon.Domain.Interfaces
 
         Task Update(User user);
 
-        Task<IEnumerable<User>> GetAll(Role? role = null);
+        Task<IEnumerable<User>> GetAll(UserFilterDto filter);
 
         Task<User> GetById(Guid id);
 

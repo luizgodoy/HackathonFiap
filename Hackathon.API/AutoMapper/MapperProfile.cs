@@ -18,6 +18,8 @@ namespace Hackathon.API.AutoMapper
                 .ForMember(x => x.UserName, opt => opt.MapFrom(x => x.Email))
                 .ForMember(x => x.NormalizedEmail, opt => opt.MapFrom(x => x.Email.ToUpper()))
                 .ReverseMap();
+
+            CreateMap<Specialty, SpecialtyDto>().ReverseMap();
         }
     }
 }

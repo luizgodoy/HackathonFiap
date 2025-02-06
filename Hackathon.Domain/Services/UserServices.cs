@@ -62,9 +62,9 @@ namespace Hackathon.Domain.Services
             await _userRepository.Delete(id);
         }
 
-        public async Task<IEnumerable<User>> GetAll(Role? role = null)
+        public async Task<IEnumerable<User>> GetAll(UserFilterDto filter)
         {
-            return await _userRepository.GetAll(role);
+            return await _userRepository.GetAll(filter.Role, filter.Specialty);
         }
 
         public async Task<User> GetById(Guid id)
