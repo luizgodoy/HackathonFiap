@@ -38,8 +38,6 @@ jobs:
         name: build-output
         path: |
           ./publish-api/
-          ./publish-app1/
-          ./publish-app2/
         retention-days: 1
 
   test:
