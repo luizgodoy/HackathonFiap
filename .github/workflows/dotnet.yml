@@ -1,4 +1,4 @@
-name: .NET
+name: .NET CI/CD
 
 on:
   push:
@@ -6,10 +6,13 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  DOTNET_VERSION: 8.0.x
+
 jobs:
   build:
     name: Build Application
-    runs-on: windows-latest  # Running on Windows
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Code
@@ -18,7 +21,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Restore Dependencies
       run: dotnet restore
@@ -26,18 +29,29 @@ jobs:
     - name: Build Project
       run: dotnet build --configuration Release --no-restore
 
+    - name: Publish API
+      run: dotnet publish -c Release -o ./publish-api ./HackathonFiap.Api/HackathonFiap.Api.csproj
+
+    - name: Publish App 1
+      run: dotnet publish -c Release -o ./publish-app1 ./HackathonFiap.Front1/HackathonFiap.Front1.csproj
+
+    - name: Publish App 2
+      run: dotnet publish -c Release -o ./publish-app2 ./HackathonFiap.Front2/HackathonFiap.Front2.csproj
+
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-output
         path: |
-          **/bin/Release/
+          ./publish-api/
+          ./publish-app1/
+          ./publish-app2/
         retention-days: 1
 
   test:
     name: Run Tests
     runs-on: windows-latest
-    needs: build  # Runs only if build succeeds
+    needs: build
 
     steps:
     - name: Checkout Code
@@ -46,7 +60,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Download Build Artifacts
       uses: actions/download-artifact@v4
@@ -56,3 +70,27 @@ jobs:
 
     - name: Run Unit Tests
       run: dotnet test --configuration Release --no-build --verbosity normal
+
+  deploy:
+    name: Deploy to Azure via FTP
+    runs-on: windows-latest
+    needs: test  # Só faz deploy se os testes passarem
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-output
+        path: .
+
+    - name: Deploy API via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4
+      with:
+        server: "ftps://waws-prod-yt1-015.ftp.azurewebsites.windows.net/site/wwwroot"
+        username: "Hackathon-API\\$Hackathon-API"
+        password: "kZvpbobno7QHYB2Q8S4bTZpPXtGNg9MEWooHSisqu8iNsiQn5Dajs56w2iRt"
+        local-dir: ./publish-api/
+        server-dir: /site/wwwroot/
