@@ -79,7 +79,7 @@ jobs:
         path: .
 
     - name: Deploy API via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.3.4
+      uses: SamKirkland/FTP-Deploy-Action@v3
       with:
         server: ${{ secrets.AZURE_FTPS_SERVER }}
         username: ${{ secrets.AZURE_FTPS_USERNAME }}
