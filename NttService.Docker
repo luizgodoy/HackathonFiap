@@ -1,1 +1,26 @@
+# Usa uma imagem base do .NET Runtime
+FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
+WORKDIR /app
 
+# Usa uma imagem para construir a aplicação
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+# Copia os arquivos do projeto para dentro do container
+COPY ["./Hackathon.NotificationService/Hackathon.NotificationService.csproj", "Hackathon.NotificationService/"]
+COPY ["./Hackathon.Contract/Hackathon.Contract.csproj", "Hackathon.Contract/"]
+COPY ["./Hackathon.Data/Hackathon.Data.csproj", "Hackathon.Data/"]
+COPY ["./Hackathon.Domain/Hackathon.Domain.csproj", "Hackathon.Domain/"]
+RUN dotnet restore "./Hackathon.NotificationService/Hackathon.NotificationService.csproj"
+
+# Copia todos os arquivos e compila a aplicação
+COPY . .
+WORKDIR "/src/Hackathon.NotificationService"
+RUN dotnet publish -c Release -o /app/publish
+
+# Usa a imagem base e copia os arquivos compilados
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "Hackathon.NotificationService.dll"]
