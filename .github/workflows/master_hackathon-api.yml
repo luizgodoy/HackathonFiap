@@ -42,7 +42,7 @@ jobs:
       - name: Upload Build Artifacts AppService
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
+          name: .net-app-2
           path: ${{ github.workspace }}/publish-appservice/
           retention-days: 1
 
