@@ -93,8 +93,8 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read # This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -113,17 +113,20 @@ jobs:
 
       - name: Check if Azure Web App exists
         id: check-webapp
+        shell: pwsh
         run: |
-          if az webapp show --name Hackathon-API --resource-group Hackathon-API_group &> /dev/null; then
+          $webapp = az webapp show --name Hackathon-API --resource-group Hackathon-API_group --query "name" --output tsv
+          if ($webapp) {
             echo "Web App already exists."
-            echo "EXISTS=true" >> $GITHUB_ENV
-          else
+            echo "EXISTS=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          } else {
             echo "Web App does not exist. It will be created."
-            echo "EXISTS=false" >> $GITHUB_ENV
-          fi
+            echo "EXISTS=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          }
 
       - name: Create Azure Web App if not exists
         if: env.EXISTS == 'false'
+        shell: pwsh
         run: |
           echo "Creating App Service Plan..."
           az appservice plan create --name HackathonPlan --resource-group Hackathon-API_group --sku B1 --is-linux
