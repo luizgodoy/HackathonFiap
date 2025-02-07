@@ -111,7 +111,7 @@ jobs:
           
   deploy-api-azure:
     runs-on: windows-latest
-    needs: build
+    needs: push-appapi-to-dockerhub
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
