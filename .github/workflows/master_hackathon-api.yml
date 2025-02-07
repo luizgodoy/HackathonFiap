@@ -128,19 +128,20 @@ jobs:
             echo "Web App does not exist. It will be created."
             echo "EXISTS=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           }
+          exit 0 # <-- Isso garante que o erro não interrompa o pipeline
 
       - name: Create Azure Web App if not exists
         if: env.EXISTS == 'false'
         shell: pwsh
         run: |
           echo "Creating App Service Plan..."
-          az appservice plan create --name HackathonPlan --resource-group Hackathon-API_group --sku B1 --is-linux
+          az appservice plan create --name HackathonPlan --resource-group Hackathon-API_group --sku B1 --is-linux || true
 
           echo "Creating Web App..."
-          az webapp create --name Hackathon-API --resource-group Hackathon-API_group --plan HackathonPlan --runtime "DOTNETCORE:8.0"
+          az webapp create --name Hackathon-API --resource-group Hackathon-API_group --plan HackathonPlan --runtime "DOTNETCORE:8.0" || true
 
           echo "Configuring Web App settings..."
-          az webapp config set --name Hackathon-API --resource-group Hackathon-API_group --always-on true
+          az webapp config set --name Hackathon-API --resource-group Hackathon-API_group --always-on true || true
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
