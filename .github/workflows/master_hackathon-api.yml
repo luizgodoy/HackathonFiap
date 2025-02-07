@@ -116,6 +116,7 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID_APPSERVICE_2 }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID_APPSERVICE_2 }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_APPSERVICE_2 }}
+          auth-type: IDENTITY
 
       - name: Ensure previous container is deleted
         run: |
