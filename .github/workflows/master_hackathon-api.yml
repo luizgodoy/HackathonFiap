@@ -86,7 +86,7 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nttservice-hacktathon:latest
 
           
-    deploy-api-azure:
+  deploy-api-azure:
     runs-on: windows-latest
     needs: build
     environment:
