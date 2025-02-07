@@ -9,6 +9,9 @@ WORKDIR /src
 
 # Copia os arquivos do projeto para dentro do container
 COPY ["./Hackathon.Application.csproj", "Hackathon.Application/"]
+COPY ["./Hackathon.Contract.csproj", "Hackathon.Contract/"]
+COPY ["./Hackathon.Data.csproj", "Hackathon.Data/"]
+COPY ["./Hackathon.Domain.csproj", "Hackathon.Domain/"]
 RUN dotnet restore "./Hackathon.Application/Hackathon.Application.csproj"
 
 # Copia todos os arquivos e compila a aplicação
