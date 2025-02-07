@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: linux-latest
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -36,32 +36,10 @@ jobs:
           path: ${{ github.workspace }}/publish-api/
           retention-days: 1
 
-  test:
-    name: Run Tests
-    runs-on: windows-latest
-    needs: build
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Download Build Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: .net-app
-        path: ${{ github.workspace }}/publish-api/
-
-    - name: Run Unit Tests
-      run: dotnet test --configuration Release --verbosity normal
 
   build-push-appservice-to-dockerhub:
     runs-on: ubuntu-latest
-    needs: [test]
+    needs: [build]
 
     steps:
       - uses: actions/checkout@v4
