@@ -117,7 +117,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID_APPSERVICE }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_APPSERVICE }}
           client-secret: ${{ secrets.AZURE_CLIENT_SECRET_APPSERVICE }}
-          auth-type: MSI
+          auth-type: SERVICE_PRINCIPAL
 
       - name: Ensure previous container is deleted
         run: |
