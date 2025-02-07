@@ -86,15 +86,15 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nttservice-hacktathon:latest
 
           
-  deploy-api-azure:
+    deploy-api-azure:
     runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
 
     steps:
       - name: Download artifact from build job
@@ -111,6 +111,29 @@ jobs:
           client-secret: ${{ secrets.AZURE_CLIENT_SECRET_APPSERVICE }}
           auth-type: SERVICE_PRINCIPAL
 
+      - name: Check if Azure Web App exists
+        id: check-webapp
+        run: |
+          if az webapp show --name Hackathon-API --resource-group Hackathon-API_group &> /dev/null; then
+            echo "Web App already exists."
+            echo "EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "Web App does not exist. It will be created."
+            echo "EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create Azure Web App if not exists
+        if: env.EXISTS == 'false'
+        run: |
+          echo "Creating App Service Plan..."
+          az appservice plan create --name HackathonPlan --resource-group Hackathon-API_group --sku B1 --is-linux
+
+          echo "Creating Web App..."
+          az webapp create --name Hackathon-API --resource-group Hackathon-API_group --plan HackathonPlan --runtime "DOTNETCORE:8.0"
+
+          echo "Configuring Web App settings..."
+          az webapp config set --name Hackathon-API --resource-group Hackathon-API_group --always-on true
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -118,6 +141,7 @@ jobs:
           app-name: 'Hackathon-API'
           slot-name: 'Production'
           package: .
+
 
   deploy-appservice-azure:
     runs-on: ubuntu-latest
