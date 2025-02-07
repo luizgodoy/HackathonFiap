@@ -26,14 +26,24 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
+      - name: dotnet publish api
         run: dotnet publish -c Release -o ${{ github.workspace }}/publish-api ./Hackathon.API/Hackathon.API.csproj
 
-      - name: Upload Build Artifacts
+      - name: Upload Build Artifacts Api
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
           path: ${{ github.workspace }}/publish-api/
+          retention-days: 1
+
+      - name: dotnet publish AppService
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish-appservice ./Hackathon.Application/Hackathon.Application.csproj
+
+      - name: Upload Build Artifacts AppService
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{ github.workspace }}/publish-appservice/
           retention-days: 1
 
 
