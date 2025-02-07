@@ -114,9 +114,10 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3F49B767B7D041E9BA9C7699AFC0996B }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_727383BFB75A42DCA0FC16A2675477FD }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8A69793A43524FB1BCD4FF1707B5E541 }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID_APPSERVICE }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_APPSERVICE }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_APPSERVICE }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_APPSERVICE }}
           
       - name: Restart Azure Container Instance with new image
         run: |
