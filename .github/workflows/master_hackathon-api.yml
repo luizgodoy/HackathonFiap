@@ -115,11 +115,16 @@ jobs:
         id: check-webapp
         shell: pwsh
         run: |
-          $webapp = az webapp show --name Hackathon-API --resource-group Hackathon-API_group --query "name" --output tsv
-          if ($webapp) {
-            echo "Web App already exists."
-            echo "EXISTS=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
-          } else {
+          try {
+            $webapp = az webapp show --name Hackathon-API --resource-group Hackathon-API_group --query "name" --output tsv 2>$null
+            if ($webapp) {
+              echo "Web App already exists."
+              echo "EXISTS=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+            } else {
+              echo "Web App does not exist. It will be created."
+              echo "EXISTS=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+            }
+          } catch {
             echo "Web App does not exist. It will be created."
             echo "EXISTS=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           }
@@ -144,6 +149,7 @@ jobs:
           app-name: 'Hackathon-API'
           slot-name: 'Production'
           package: .
+
 
 
   deploy-appservice-azure:
