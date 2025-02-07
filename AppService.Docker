@@ -8,10 +8,10 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copia os arquivos do projeto para dentro do container
-COPY ["./Hackathon.Application.csproj", "Hackathon.Application/"]
-COPY ["./Hackathon.Contract.csproj", "Hackathon.Contract/"]
-COPY ["./Hackathon.Data.csproj", "Hackathon.Data/"]
-COPY ["./Hackathon.Domain.csproj", "Hackathon.Domain/"]
+COPY ["./Hackathon.Application/Hackathon.Application.csproj", "Hackathon.Application/"]
+COPY ["./Hackathon.Application/Hackathon.Contract.csproj", "Hackathon.Contract/"]
+COPY ["./Hackathon.Application/Hackathon.Data.csproj", "Hackathon.Data/"]
+COPY ["./Hackathon.Application/Hackathon.Domain.csproj", "Hackathon.Domain/"]
 RUN dotnet restore "./Hackathon.Application/Hackathon.Application.csproj"
 
 # Copia todos os arquivos e compila a aplicação
