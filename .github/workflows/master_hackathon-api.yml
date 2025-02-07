@@ -45,9 +45,32 @@ jobs:
       - name: dotnet publish AppApi
         run: dotnet publish -c Release -o ${{ github.workspace }}/publish-nttservice ./Hackathon.API/Hackathon.API.csproj
 
+  test:
+    name: Run Tests
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-output
+        path: ${{ github.workspace }}/publish-api/
+
+    - name: Run Unit Tests
+      run: dotnet test --configuration Release --verbosity normal
+      
   push-appapi-to-dockerhub:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [test]
 
     steps:
       - uses: actions/checkout@v4
@@ -68,7 +91,7 @@ jobs:
         
   push-appservice-to-dockerhub:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [test]
 
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +112,7 @@ jobs:
 
   push-nttservice-to-dockerhub:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [test]
 
     steps:
       - uses: actions/checkout@v4
