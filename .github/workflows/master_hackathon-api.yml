@@ -113,10 +113,11 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID_APPSERVICE_2 }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID_APPSERVICE_2 }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_APPSERVICE_2 }}
-          auth-type: IDENTITY
+          client-id: ${{ secrets.AZURE_CLIENT_ID_APPSERVICE }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_APPSERVICE }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_APPSERVICE }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_APPSERVICE }}
+          auth-type: MSI
 
       - name: Ensure previous container is deleted
         run: |
