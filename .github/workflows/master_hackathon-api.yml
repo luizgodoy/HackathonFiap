@@ -77,7 +77,7 @@ jobs:
 
       - name: Build and push AppointmentService image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/appservice-hacktathon:latest -f ./Hackathon.Application/dockerfile .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/appservice-hacktathon:latest -f Hackathon.Application/Dockerfile Hackathon.Application
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/appservice-hacktathon:latest
 
   deploy:
