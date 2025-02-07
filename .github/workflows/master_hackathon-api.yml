@@ -42,9 +42,6 @@ jobs:
       - name: dotnet publish NttService
         run: dotnet publish -c Release -o ${{ github.workspace }}/publish-nttservice ./Hackathon.NotificationService/Hackathon.NotificationService.csproj
 
-      - name: dotnet publish AppApi
-        run: dotnet publish -c Release -o ${{ github.workspace }}/publish-nttservice ./Hackathon.API/Hackathon.API.csproj
-
           
   test:
     name: Run Tests
