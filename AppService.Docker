@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copia os arquivos do projeto para dentro do container
-COPY ["Hackathon.Application/Hackathon.Application.csproj", "Hackathon.Application/"]
+COPY ["./Hackathon.Application/Hackathon.Application.csproj", "Hackathon.Application/"]
 RUN dotnet restore "./Hackathon.Application/Hackathon.Application.csproj"
 
 # Copia todos os arquivos e compila a aplicação
