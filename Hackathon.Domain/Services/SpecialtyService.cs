@@ -18,11 +18,6 @@ public class SpecialtyService : ISpecialtyService
         _specialtyRepository = specialtyRepository;
     }
 
-    public Task Cancel(Specialty specialty, Guid patientId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task Create(string specialtyName, Guid doctorId)
     {
         var specialty = new Specialty()
@@ -30,27 +25,12 @@ public class SpecialtyService : ISpecialtyService
             MedicalSpecialty = specialtyName,
             UserId = doctorId,
         };
+        var repositorySpecialty = await _specialtyRepository.CheckExistingSpecialty(specialty);
+
+        if (repositorySpecialty != null)
+            throw new Exception("Você já possui essa especialidade");
 
         await _specialtyRepository.Create(specialty);        
     }
 
-    public Task Delete(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Specialty>> GetAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Specialty>> GetAll(Guid? doctorId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task Update(Specialty specialty)
-    {
-        throw new NotImplementedException();
-    }
 }
