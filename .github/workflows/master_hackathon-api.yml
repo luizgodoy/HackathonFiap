@@ -1,0 +1,280 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - Hackathon-API
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read #This is required for actions/checkout
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish api
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish-api ./Hackathon.API/Hackathon.API.csproj
+
+      - name: Upload Build Artifacts Api
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-api
+          path: ${{ github.workspace }}/publish-api/
+          retention-days: 1
+
+      - name: dotnet publish AppService
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish-appservice ./Hackathon.Application/Hackathon.Application.csproj
+
+      - name: dotnet publish NttService
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish-nttservice ./Hackathon.NotificationService/Hackathon.NotificationService.csproj
+
+          
+  test:
+    name: Run Tests
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-api
+        path: ${{ github.workspace }}/publish-api/
+
+    - name: Run Unit Tests
+      run: dotnet test --configuration Release --verbosity normal
+      
+  push-appapi-to-dockerhub:
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push AppApi image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/appapi-hacktathon:latest -f ./AppApi.Docker .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/appapi-hacktathon:latest
+        
+  push-appservice-to-dockerhub:
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push AppointmentService image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/appservice-hacktathon:latest -f ./AppService.Docker .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/appservice-hacktathon:latest
+
+  push-nttservice-to-dockerhub:
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push AppointmentService image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/nttservice-hacktathon:latest -f ./NttService.Docker .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nttservice-hacktathon:latest
+
+          
+  deploy-api-azure:
+    runs-on: windows-latest
+    needs: push-appapi-to-dockerhub
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: build-api
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID_APPSERVICE }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_APPSERVICE }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_APPSERVICE }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_APPSERVICE }}
+          auth-type: SERVICE_PRINCIPAL
+
+      - name: Check if Azure Web App exists
+        id: check-webapp
+        shell: pwsh
+        run: |
+          try {
+            $webapp = az webapp show --name Hackathon-API --resource-group Hackathon-API_group --query "name" --output tsv 2>$null
+            if ($webapp) {
+              echo "Web App already exists."
+              echo "EXISTS=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+            } else {
+              echo "Web App does not exist. It will be created."
+              echo "EXISTS=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+            }
+          } catch {
+            echo "Web App does not exist. It will be created."
+            echo "EXISTS=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          }
+          exit 0 # <-- Isso garante que o erro não interrompa o pipeline
+
+      - name: Create Azure Web App if not exists
+        if: env.EXISTS == 'false'
+        shell: pwsh
+        run: |
+          echo "Creating App Service Plan..."
+          az appservice plan create --name HackathonPlan --resource-group Hackathon-API_group --sku B1 --is-linux || true
+
+          echo "Creating Web App..."
+          az webapp create --name Hackathon-API --resource-group Hackathon-API_group --plan HackathonPlan --runtime "DOTNETCORE:8.0" || true
+
+          echo "Configuring Web App settings..."
+          az webapp config set --name Hackathon-API --resource-group Hackathon-API_group --always-on true || true
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'Hackathon-API'
+          slot-name: 'Production'
+          package: .
+
+
+  deploy-appservice-azure:
+    runs-on: ubuntu-latest
+    needs: push-appservice-to-dockerhub
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write  # Adiciona permissão para OIDC (requerido para login no Azure)
+      contents: read  # Permissão necessária para checkout do repositório
+
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID_APPSERVICE }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_APPSERVICE }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_APPSERVICE }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_APPSERVICE }}
+          auth-type: SERVICE_PRINCIPAL
+
+      - name: Ensure previous container is deleted
+        run: |
+          az container delete --name appservice-container --resource-group Hackathon-API_group --yes || true
+          echo "Waiting for container deletion..."
+          sleep 10
+
+      - name: Deploy new container instance
+        run: |
+          az container create \
+            --resource-group Hackathon-API_group \
+            --name appservice-container \
+            --image zampiericlademir/appservice-hacktathon:latest \
+            --cpu 1 \
+            --memory 1 \
+            --os-type Linux \
+            --restart-policy Always
+          
+      - name: Verify deployment status
+        run: |
+          az container show --resource-group Hackathon-API_group --name appservice-container --query "{Status:instanceView.state}" --output table
+
+
+  deploy-nttservice-azure:
+    runs-on: ubuntu-latest
+    needs: push-nttservice-to-dockerhub
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write  # Adiciona permissão para OIDC (requerido para login no Azure)
+      contents: read  # Permissão necessária para checkout do repositório
+
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID_NTTSERVICE }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_NTTSERVICE }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_NTTSERVICE }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_NTTSERVICE }}
+          auth-type: SERVICE_PRINCIPAL
+
+      - name: Ensure previous container is deleted
+        run: |
+          az container delete --name nttservice-container --resource-group Hackathon-API_group --yes || true
+          echo "Waiting for container deletion..."
+          sleep 10
+
+      - name: Deploy new container instance
+        run: |
+          az container create \
+            --resource-group Hackathon-API_group \
+            --name nttservice-container \
+            --image zampiericlademir/nttservice-hacktathon:latest \
+            --cpu 1 \
+            --memory 1 \
+            --os-type Linux \
+            --restart-policy Always
+          
+      - name: Verify deployment status
+        run: |
+          az container show --resource-group Hackathon-API_group --name nttservice-container --query "{Status:instanceView.state}" --output table
