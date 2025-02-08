@@ -1,13 +1,10 @@
-﻿using Azure.Identity;
-using Hackathon.Contract.Contracts;
+﻿using Hackathon.Contract.Contracts;
 using Hackathon.Core.DTO;
 using Hackathon.Core.Models;
 using Hackathon.Data.Interfaces;
 using Hackathon.Domain.Interfaces;
 using Hackathon.Domain.Validators;
 using MassTransit;
-using System.Net.Mail;
-using System.Numerics;
 
 namespace Hackathon.Domain.Services
 {
@@ -100,7 +97,7 @@ namespace Hackathon.Domain.Services
                 return;
             }
 
-            var doctor = await _userRepository.GetById(appointment!.DoctorId);
+            var doctor = await _userRepository.GetById(appointment!.DoctorId);            
 
             if (doctor == null)
             {
@@ -108,11 +105,19 @@ namespace Hackathon.Domain.Services
                 return;
             }
 
+            var patient = await _userRepository.GetById(appointment.PatientId.Value);
+
+            if (patient == null)
+            {
+                Console.WriteLine("Paciente não encontrado, a notificação não será enviada");
+                return;
+            }
+
             var notificationMsg = new EmailNotificationMessage()
             {
                 RecipientEmail = doctor.Email,
                 RecipientName = doctor.Name,
-                Body = _emailMessageSettings.Body,
+                Body = _emailMessageSettings.Body.Replace("{nome_do_médico}", doctor.Name).Replace("{nome_do_paciente}", patient.Name).Replace("{data}", appointment.StartAt.ToString("dddd, dd MMMM yyyy")).Replace("{horário_agendado}", appointment.StartAt.ToShortTimeString()),
                 Subject = _emailMessageSettings.Subject,
             };
 
